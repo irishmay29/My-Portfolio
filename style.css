@@ -1,0 +1,41 @@
+* {
+  margin: auto 0;
+}
+
+html {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.nav-wrapper {
+  background-color: #00A6FB;
+  width: auto;
+  height: auto;
+  padding: 30px;
+  border: black 10px;
+}
+
+.nav-container {
+  display: inline-flex;
+
+}
+
+.name-link {
+  text-decoration: none;
+  background-color: white;
+  padding: 20px;
+}
+
+.nav-list {
+  list-style-type: none;
+  display: inline-flex;
+  position: absolute;
+  margin: 0 0 0 500px;
+  right: 20px;
+  font-size: 20px;
+}
+
+.nav-link {
+  text-align: center;
+  margin: 0 0 0 50px;
+}
+
