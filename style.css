@@ -38,10 +38,8 @@ html {
 .nav-link {
   text-align: center;
   margin: 0 0 0 50px;
-}
-
-.link {
   text-decoration: none;
+  cursor: pointer;
 }
 
 .prof-pic {
