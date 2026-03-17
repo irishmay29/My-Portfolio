@@ -1,0 +1,265 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const skills = [
+	'HTML5',
+	'CSS3',
+	'Tailwind CSS',
+	'JavaScript',
+	'TypeScript',
+	'React',
+	'Astro',
+	'Node.js',
+	'Express',
+	'MongoDB',
+	'GitHub Actions',
+	'Figma'
+];
+
+const projects = [
+	{
+		title: 'POS System',
+		description:
+			'Professional point-of-sale interface with category browsing, add-to-order actions, and live cart interactions.',
+		stack: ['JavaScript', 'HTML', 'CSS', 'Vercel'],
+		link: 'https://pos-system-ds8v.vercel.app/pos',
+		image: '/projects/pos-system.svg',
+		repo: 'https://github.com/irishmay29'
+	},
+	{
+		title: 'Workboard SaaS Dashboard',
+		description:
+			'Multi-tenant analytics dashboard with role-based auth, real-time charts, and exportable reporting.',
+		stack: ['React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+		link: '#',
+		image: '/projects/workboard.svg',
+		repo: '#'
+	},
+	{
+		title: 'Nomad Notes PWA',
+		description:
+			'Offline-first notes app with sync queues, local caching, and keyboard-first UX for speed.',
+		stack: ['Vite', 'IndexedDB', 'Service Workers'],
+		link: '#',
+		image: '/projects/nomad-notes.svg',
+		repo: '#'
+	}
+];
+
+const featuredProject = projects[0];
+const moreProjects = projects.slice(1);
+
+const experience = [
+	{
+		period: '2024 - Present',
+		role: 'Freelance Web Developer',
+		details: 'Delivered 15+ production websites focused on Core Web Vitals, accessibility, and SEO.'
+	},
+	{
+		period: '2022 - 2024',
+		role: 'Frontend Developer, Craftline Studio',
+		details: 'Built design-system-driven interfaces and reduced QA bugs by 32 percent through component testing.'
+	}
+];
+---
+
+<Layout title="Irish Delos Santos | Web Developer Portfolio" description="Web developer portfolio built with Astro and Tailwind.">
+	<div class="grain-bg fixed inset-0 -z-10"></div>
+	<header class="sticky top-0 z-40 border-b border-paper/10 bg-ink/85 backdrop-blur">
+		<nav class="mx-auto flex w-[min(1100px,92%)] items-center justify-between py-4">
+			<a href="#home" class="logo">irish.dev</a>
+			<ul class="hidden gap-6 text-sm md:flex">
+				<li><a href="#about" class="nav-link">About</a></li>
+				<li><a href="#skills" class="nav-link">Skills</a></li>
+				<li><a href="#projects" class="nav-link">Projects</a></li>
+				<li><a href="#contact" class="nav-link">Contact</a></li>
+			</ul>
+			<a href="#contact" class="btn-primary hidden md:inline-flex">Hire Me</a>
+		</nav>
+	</header>
+
+	<main id="home" class="mx-auto w-[min(1100px,92%)] py-16 md:py-24">
+		<section class="hero-grid grid items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
+			<div class="space-y-8" data-reveal>
+				<p class="eyebrow">Web Developer</p>
+				<h1 class="text-4xl leading-tight font-semibold text-balance md:text-6xl">
+					I build fast, clean, and conversion-focused websites.
+				</h1>
+				<p class="max-w-2xl text-paper/75 md:text-lg">
+					I am Irish, a developer who turns product ideas into performant web experiences using modern
+					frontend architecture.
+				</p>
+				<div class="flex flex-wrap items-center gap-4">
+					<a href="#projects" class="btn-primary">View Projects</a>
+					<a href="mailto:irishd972@gmail.com" class="btn-ghost">irishd972@gmail.com</a>
+				</div>
+			</div>
+			<div class="hero-card" data-reveal data-delay="120">
+				<svg class="hero-accent" viewBox="0 0 220 220" fill="none" aria-hidden="true">
+					<circle cx="110" cy="110" r="80" stroke="currentColor" stroke-width="1.5"></circle>
+					<circle cx="110" cy="110" r="52" stroke="currentColor" stroke-width="1.5"></circle>
+					<path d="M110 24V196M24 110H196" stroke="currentColor" stroke-width="1.5"></path>
+				</svg>
+				<p class="text-xs tracking-[0.2em] text-paper/50 uppercase">Current Focus</p>
+				<h2 class="mt-3 text-2xl font-medium">Astro + Tailwind Product Sites</h2>
+				<p class="mt-4 text-paper/75">
+					Shipping UI that scores high on Lighthouse without sacrificing character.
+				</p>
+				<div class="mt-8 grid gap-3 text-sm">
+					<div class="metric"><span>15+</span> launched client projects</div>
+					<div class="metric"><span>98</span> average performance score</div>
+					<div class="metric"><span>24h</span> response time</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="featured" class="section" data-reveal>
+			<div class="section-head">
+				<p class="eyebrow">Featured Project</p>
+				<h2 class="section-title">{featuredProject.title}</h2>
+			</div>
+			<article class="spotlight-card">
+				<div class="spotlight-media-wrap">
+					<img
+						src={featuredProject.image}
+						alt={`${featuredProject.title} preview`}
+						class="spotlight-media"
+						loading="lazy"
+						decoding="async"
+					/>
+				</div>
+				<div class="spotlight-content">
+					<p class="section-copy">{featuredProject.description}</p>
+					<ul class="spotlight-tags">
+						{featuredProject.stack.map((item) => <li>{item}</li>)}
+					</ul>
+					<div class="flex flex-wrap gap-4">
+						<a href={featuredProject.link} target="_blank" rel="noopener noreferrer" class="btn-primary">View Live</a>
+						<a href={featuredProject.repo} target="_blank" rel="noopener noreferrer" class="btn-ghost">View Source</a>
+					</div>
+				</div>
+			</article>
+		</section>
+
+		<section id="about" class="section about-grid" data-reveal>
+			<div>
+				<p class="eyebrow">About</p>
+				<h2 class="section-title">Reliable execution from concept to deployment.</h2>
+				<p class="section-copy">
+					My workflow blends strategy, design thinking, and robust engineering. I work comfortably across
+					landing pages, content platforms, and web applications, with strong attention to semantics,
+					maintainability, and accessibility.
+				</p>
+			</div>
+			<div class="about-illustration" aria-hidden="true">
+				<svg viewBox="0 0 340 240" fill="none" role="presentation">
+					<rect x="20" y="28" width="300" height="184" rx="20" stroke="currentColor" stroke-width="2"></rect>
+					<rect x="58" y="70" width="94" height="66" rx="10" fill="currentColor" fill-opacity="0.18"></rect>
+					<rect x="174" y="70" width="108" height="12" rx="6" fill="currentColor" fill-opacity="0.5"></rect>
+					<rect x="174" y="92" width="84" height="10" rx="5" fill="currentColor" fill-opacity="0.36"></rect>
+					<rect x="174" y="111" width="70" height="10" rx="5" fill="currentColor" fill-opacity="0.3"></rect>
+					<path d="M60 170H280" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+					<circle cx="70" cy="44" r="5"></circle>
+					<circle cx="88" cy="44" r="5"></circle>
+					<circle cx="106" cy="44" r="5"></circle>
+				</svg>
+			</div>
+		</section>
+
+		<section id="skills" class="section" data-reveal>
+			<div class="section-head">
+				<p class="eyebrow">Skills</p>
+				<h2 class="section-title">Tools I use to ship quality software.</h2>
+			</div>
+			<ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+				{
+					skills.map((skill, index) => (
+						<li class="chip" data-reveal style={`--delay:${index * 45}ms`}>{skill}</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section id="projects" class="section" data-reveal>
+			<div class="section-head">
+				<p class="eyebrow">More Projects</p>
+				<h2 class="section-title">Additional builds worth exploring.</h2>
+			</div>
+			<div class="grid gap-6 md:grid-cols-2">
+				{
+					moreProjects.map((project) => (
+						<article class="project-card">
+							<img src={project.image} alt={`${project.title} screenshot`} class="project-shot" loading="lazy" decoding="async" />
+							<h3>{project.title}</h3>
+							<p>{project.description}</p>
+							<ul>
+								{project.stack.map((item) => <li>{item}</li>)}
+							</ul>
+							<div class="project-links">
+								<a href={project.link} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title}`}>Live Preview</a>
+								<a href={project.repo} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title} source`}>Source</a>
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</section>
+
+		<section class="section" data-reveal>
+			<div class="section-head">
+				<p class="eyebrow">Experience</p>
+				<h2 class="section-title">Professional timeline</h2>
+			</div>
+			<div class="space-y-4">
+				{
+					experience.map((item) => (
+						<article class="timeline-item">
+							<p>{item.period}</p>
+							<h3>{item.role}</h3>
+							<p>{item.details}</p>
+						</article>
+					))
+				}
+			</div>
+		</section>
+
+		<section id="contact" class="section" data-reveal>
+			<p class="eyebrow">Contact</p>
+			<h2 class="section-title">Let us build something worth remembering.</h2>
+			<p class="section-copy">
+				Open for freelance, contract, and long-term product roles. Tell me what you are building and I will
+				reply with scope, timeline, and next steps.
+			</p>
+			<div class="mt-8 flex flex-wrap gap-4">
+				<a href="mailto:irishd972@gmail.com" class="btn-primary">Send Email</a>
+				<a href="https://github.com/irishmay29" class="btn-ghost">GitHub</a>
+				<a href="https://www.linkedin.com/in/irish-delos-santos-344624224/" class="btn-ghost">LinkedIn</a>
+			</div>
+		</section>
+	</main>
+
+	<footer class="border-t border-paper/10 py-8 text-center text-sm text-paper/60">
+		<p>Built with Astro and Tailwind. 2026 Irish Delos Santos.</p>
+	</footer>
+
+	<script>
+		const revealItems = document.querySelectorAll('[data-reveal]');
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('is-visible');
+						observer.unobserve(entry.target);
+					}
+				});
+			},
+			{ threshold: 0.18, rootMargin: '0px 0px -30px 0px' }
+		);
+
+		revealItems.forEach((item) => {
+			const delay = item.getAttribute('data-delay') || item.style.getPropertyValue('--delay');
+			if (delay) item.style.transitionDelay = delay;
+			observer.observe(item);
+		});
+	</script>
+</Layout>
