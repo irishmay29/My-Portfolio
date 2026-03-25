@@ -1,6 +1,77 @@
+/* ============================================================
+   GLOBAL STYLESHEET — src/styles/global.css
+
+   This file contains ALL custom CSS for the portfolio site.
+   It is imported once inside Layout.astro and automatically
+   applies to every page.
+
+   Table of contents:
+     1.  Font imports
+     2.  Tailwind import
+     3.  Design tokens  (@theme)
+     4.  Base styles    (html, body)
+     5.  Grain overlay
+     6.  Navigation     (.logo, .nav-link)
+     7.  Buttons        (.btn-primary, .btn-ghost)
+     8.  Typography helpers (.eyebrow, .section-title, etc.)
+     9.  Hero card & metrics
+     10. Spotlight / featured project card
+     11. About section grid & illustration
+     12. Skills chips
+     13. Project cards
+     14. Timeline (Experience)
+     15. Header & footer overrides
+     16. Scroll-reveal animation states
+     17. Keyframe animations
+     18. Responsive overrides  (mobile ≤ 768px)
+     19. Accessibility         (prefers-reduced-motion)
+   ============================================================ */
+
+
+/* -------------------------------------------------------
+   1. FONT IMPORTS
+   Two Google Fonts are loaded here:
+   - Plus Jakarta Sans: clean modern sans-serif used for all
+     body text (loaded in weights 400, 500, 600, 700).
+   - Space Mono: a monospaced font used for the logo, labels,
+     tags, and anywhere a "developer / code" look is needed.
+   "display=swap" means the browser shows a fallback font
+   while the custom font downloads, preventing invisible text.
+   ------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* -------------------------------------------------------
+   2. TAILWIND CSS IMPORT
+   This single line pulls in Tailwind's entire utility library.
+   After this import you can use classes like "flex", "gap-4",
+   "text-sm", "md:grid-cols-2" etc. directly in your HTML.
+   ------------------------------------------------------- */
 @import "tailwindcss";
 
+
+/* ============================================================
+   3. DESIGN TOKENS — @theme
+   Tailwind v4 uses @theme to define custom design variables.
+   These automatically become usable Tailwind utility classes.
+
+   How it works:
+     --color-ink  →  bg-ink, text-ink, border-ink, etc.
+     --font-sans  →  font-sans class
+
+   COLOR PALETTE:
+     ink    (#020202) — near-black, used as the page background
+     paper  (#a7bbec) — soft blue-lavender, primary text & accents
+     sun    (#9097c0) — muted blue-purple accent
+     mint   (#705d56) — warm brown, used in card backgrounds
+     walnut (#503b31) — darker warm brown for deeper card layers
+     mocha  (#705d56) — alias for mint
+     steel  (#9097c0) — alias for sun
+     sky    (#a7bbec) — alias for paper (used as default text color)
+
+   FONT FAMILIES:
+     --font-sans  →  Plus Jakarta Sans (body / paragraph text)
+     --font-mono  →  Space Mono       (labels, tags, logo)
+   ============================================================ */
 @theme {
 	--color-ink: #020202;
 	--color-paper: #a7bbec;
@@ -14,10 +85,27 @@
 	--font-mono: 'Space Mono', monospace;
 }
 
+/* ============================================================
+   4. BASE STYLES — html & body
+   ============================================================ */
+
+/* Smooth scrolling: when a user clicks an anchor link like
+   href="#about", the page glides down smoothly instead of
+   jumping instantly to that section. */
 html {
 	scroll-behavior: smooth;
 }
 
+/* Page-level styles applied to the entire document body.
+   - font-family: uses Plus Jakarta Sans (defined in @theme).
+   - line-height 1.6: adds comfortable spacing between lines —
+     easier to read than the tighter browser default of ~1.2.
+   - background: three layered gradients stacked together:
+       1. A large soft blue glow in the top-left corner.
+       2. A smaller soft blue glow in the top-right corner.
+       3. A base linear gradient from near-black (#020202)
+          through a very dark warm brown, creating depth.
+   - color: sets the default text color to the sky/paper blue. */
 body {
 	font-family: var(--font-sans);
 	line-height: 1.6;
@@ -28,6 +116,17 @@ body {
 	color: var(--color-sky);
 }
 
+
+/* ============================================================
+   5. GRAIN / NOISE OVERLAY — .grain-bg
+   A fixed decorative layer that adds extra glowing color spots
+   on top of the body background.
+   - fixed + inset-0 (in Tailwind): the div stays in place
+     while the user scrolls, covering the entire viewport.
+   - -z-10 (Tailwind): placed behind ALL other content.
+   - opacity 0.85: slightly transparent so the body gradient
+     still shows through.
+   ============================================================ */
 .grain-bg {
 	background-image:
 		radial-gradient(circle at 84% 6%, rgb(167 187 236 / 0.24), transparent 26%),
@@ -36,6 +135,14 @@ body {
 	opacity: 0.85;
 }
 
+/* ============================================================
+   6. NAVIGATION STYLES
+   ============================================================ */
+
+/* Logo link in the top-left of the navbar ("irish").
+   Uses Space Mono to give it a code/developer aesthetic.
+   Uppercase + wide letter-spacing (0.08em) makes short text
+   look intentional and distinctive as a brand mark. */
 .logo {
 	font-family: var(--font-mono);
 	font-size: 0.9rem;
@@ -44,16 +151,36 @@ body {
 	color: var(--color-sky);
 }
 
+/* Navigation anchor links (About, Skills, Projects, Contact).
+   Slightly transparent at rest so they look softer than headings.
+   On hover: text brightens and a subtle glow appears around it. */
 .nav-link {
 	color: rgb(167 187 236 / 0.78);
+	/* transition makes the color and glow change smoothly over 160ms */
 	transition: color 160ms ease, text-shadow 160ms ease;
 }
 
 .nav-link:hover {
 	color: #d1dcf7;
+	/* text-shadow creates a soft luminous halo around the hovered link */
 	text-shadow: 0 0 12px rgb(167 187 236 / 0.45);
 }
 
+
+/* ============================================================
+   7. BUTTON STYLES — .btn-primary & .btn-ghost
+   Two variants are used throughout the site:
+   - btn-primary  →  solid gradient fill  (main call-to-action)
+   - btn-ghost    →  transparent + border (secondary action)
+   ============================================================ */
+
+/* Shared base for BOTH buttons:
+   - inline-flex + align/justify: correctly centers any text
+     or icon inside the button regardless of content.
+   - border-radius: 9999px: fully rounded "pill" shape.
+   - padding + font settings: comfortable readable size.
+   - transition: animates hover changes (lift, shadow, colors)
+     smoothly over 180 milliseconds. */
 .btn-primary,
 .btn-ghost {
 	display: inline-flex;
@@ -66,6 +193,9 @@ body {
 	transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease;
 }
 
+/* Primary button: filled with a light blue → purple gradient.
+   Uses dark text (#020202) for contrast against the light fill.
+   box-shadow adds a colored glow underneath for visual depth. */
 .btn-primary {
 	border: 1px solid rgb(167 187 236 / 0.45);
 	background: linear-gradient(125deg, #a7bbec 0%, #9097c0 100%);
@@ -73,22 +203,37 @@ body {
 	box-shadow: 0 10px 28px rgb(167 187 236 / 0.25);
 }
 
+/* Ghost button: transparent background with just a subtle border.
+   Text stays the default sky color to remain readable on dark bg. */
 .btn-ghost {
 	border: 1px solid rgb(167 187 236 / 0.28);
 	color: var(--color-sky);
 	background-color: rgb(80 59 49 / 0.35);
 }
 
+/* Both buttons move 2px upward on hover, giving a satisfying
+   "rising" or "lifting" physical feel when hovered. */
 .btn-primary:hover,
 .btn-ghost:hover {
 	transform: translateY(-2px);
 }
 
+/* Ghost button hover: slightly stronger border and background
+   so it visibly responds without becoming too bold. */
 .btn-ghost:hover {
 	border-color: rgb(167 187 236 / 0.5);
 	background-color: rgb(80 59 49 / 0.5);
 }
 
+/* ============================================================
+   8. TYPOGRAPHY HELPERS
+   ============================================================ */
+
+/* Eyebrow text: the small uppercase label placed above a section
+   title (e.g. "About", "Skills", "Featured Project").
+   Uses Space Mono for the techy / developer aesthetic.
+   Wide letter-spacing (0.18em) makes short ALL-CAPS words more
+   readable and intentional-looking. */
 .eyebrow {
 	font-family: var(--font-mono);
 	font-size: 0.75rem;
@@ -97,6 +242,19 @@ body {
 	color: rgb(167 187 236 / 0.72);
 }
 
+/* ============================================================
+   9. HERO CARD & METRICS
+   ============================================================ */
+
+/* The decorative card on the right side of the hero section
+   that shows "Current Focus" info.
+   - position: relative  → needed so the absolutely-positioned
+     .hero-accent SVG inside it is placed relative to this card.
+   - overflow: hidden    → clips the spinning SVG rings at the
+     card's rounded corners so nothing bleeds outside.
+   - Gradient background → warm brown to near-black layered look.
+   - box-shadow          → inner top glow (like light hitting the
+     edge) + a deep drop shadow for a lifted 3D appearance. */
 .hero-card {
 	position: relative;
 	overflow: hidden;
@@ -109,6 +267,10 @@ body {
 		0 16px 45px rgb(2 2 2 / 0.6);
 }
 
+/* Stat row inside the hero card (e.g. "1 launched client project").
+   Uses flexbox to line up the number and the label side-by-side.
+   align-items: baseline aligns text along the bottom of each word,
+   so different font sizes sit on the same visual baseline. */
 .metric {
 	display: flex;
 	align-items: baseline;
@@ -116,20 +278,40 @@ body {
 	color: rgb(167 187 236 / 0.83);
 }
 
+/* The numeric value inside a metric row (the "1" in "1 project").
+   Larger and brighter than surrounding text to draw the eye. */
 .metric span {
 	font-family: var(--font-mono);
 	font-size: 1.15rem;
 	color: #d3ddf7;
 }
 
+/* ============================================================
+   SECTION LAYOUT HELPERS
+   These classes are reused across every major page section.
+   ============================================================ */
+
+/* Adds consistent vertical spacing ABOVE each section.
+   6rem ≈ 96px — enough breathing room between sections. */
 .section {
 	margin-top: 6rem;
 }
 
+/* The header area of a section (eyebrow label + title).
+   A small bottom margin separates it from the section content. */
 .section-head {
 	margin-bottom: 1.2rem;
 }
 
+/* Large section heading used throughout the page.
+   clamp() creates a RESPONSIVE font size with three values:
+     - 1.7rem  → minimum size on very small screens
+     - 2.5vw   → preferred size that scales with the viewport width
+     - 2.2rem  → maximum size cap so it never gets too large
+   max-width: 18ch limits the heading to roughly 18 characters
+   wide, which forces natural line breaks and looks more designed
+   than one long unbroken line of text.
+   text-wrap: balance tries to make each line roughly equal width. */
 .section-title {
 	margin-top: 0.65rem;
 	max-width: 18ch;
@@ -139,12 +321,24 @@ body {
 	text-wrap: balance;
 }
 
+/* Body paragraph text below a section title.
+   max-width: 70ch limits line width to ~70 characters — the
+   optimal reading length for comfortable comprehension.
+   Slightly transparent so it feels softer than headings. */
 .section-copy {
 	margin-top: 1rem;
 	max-width: 70ch;
 	color: rgb(167 187 236 / 0.8);
 }
 
+/* ============================================================
+   HERO ACCENT SVG (the rotating circle/crosshair in the hero card)
+   - Absolutely positioned in the top-right corner of .hero-card
+     (which has position: relative).
+   - Negative right/top values push it partially outside the card —
+     overflow:hidden on .hero-card clips it cleanly at the edge.
+   - The rotate-accent @keyframes (defined later) spins it forever.
+   ============================================================ */
 .hero-accent {
 	position: absolute;
 	right: -48px;
@@ -155,9 +349,16 @@ body {
 	animation: rotate-accent 20s linear infinite;
 }
 
+
+/* ============================================================
+   10. SPOTLIGHT / FEATURED PROJECT CARD
+   A wide two-column card used for the main featured project:
+   preview image on the left, description + tags + links on right.
+   ============================================================ */
 .spotlight-card {
 	display: grid;
 	gap: 1.2rem;
+	/* Left column (image) is slightly wider than right (text) */
 	grid-template-columns: 1.1fr 0.9fr;
 	padding: 1.2rem;
 	border-radius: 1.1rem;
@@ -166,6 +367,9 @@ body {
 	box-shadow: 0 18px 45px rgb(2 2 2 / 0.45);
 }
 
+/* Wrapper around the project preview image.
+   overflow: hidden clips the image within the rounded corners
+   so the image doesn't bleed outside the curved border. */
 .spotlight-media-wrap {
 	border-radius: 0.9rem;
 	overflow: hidden;
@@ -173,6 +377,10 @@ body {
 	background-color: rgb(2 2 2 / 0.6);
 }
 
+/* The preview image fills its container fully.
+   object-fit: cover crops the image proportionally to fill the
+   space without stretching or distorting it.
+   display: block removes the small default gap below inline images. */
 .spotlight-media {
 	width: 100%;
 	height: 100%;
@@ -180,6 +388,10 @@ body {
 	display: block;
 }
 
+/* The text area on the right side of the spotlight card.
+   flex-direction: column stacks description, tags, and buttons
+   vertically. justify-content: center aligns them to the middle
+   of the available height. */
 .spotlight-content {
 	display: flex;
 	flex-direction: column;
@@ -187,15 +399,21 @@ body {
 	gap: 1rem;
 }
 
+/* The tech stack tag list (e.g. "JavaScript", "HTML", "CSS").
+   flex-wrap allows tags to wrap onto a new line if there are many. */
 .spotlight-tags {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.5rem;
-	list-style: none;
+	list-style: none; /* removes default bullet points from <ul> */
 	padding: 0;
 	margin: 0;
 }
 
+/* Individual technology tag pill.
+   border-radius: 9999px = fully rounded pill shape.
+   Space Mono gives the code/tech look.
+   Semi-transparent background blends with the dark card. */
 .spotlight-tags li {
 	border-radius: 9999px;
 	padding: 0.25rem 0.7rem;
@@ -205,13 +423,23 @@ body {
 	color: #dbe4fa;
 }
 
+/* ============================================================
+   11. ABOUT SECTION — grid & illustration
+   ============================================================ */
+
+/* Two-column layout: bio text on the left, SVG illustration
+   on the right. align-items: center vertically centers both
+   columns relative to whichever is taller. */
 .about-grid {
 	display: grid;
 	gap: 1.5rem;
+	/* Text column is slightly wider than the illustration column */
 	grid-template-columns: 1.1fr 0.9fr;
 	align-items: center;
 }
 
+/* The decorative card that holds the SVG browser illustration.
+   Uses the same dark card treatment as the hero card. */
 .about-illustration {
 	padding: 1.1rem;
 	border-radius: 1rem;
@@ -221,20 +449,42 @@ body {
 	box-shadow: 0 12px 32px rgb(2 2 2 / 0.45);
 }
 
+/* Make the decorative SVG fill the card width fully.
+   display: block removes the small space that appears below
+   inline SVG elements by default. */
 .about-illustration svg {
 	width: 100%;
 	height: auto;
 	display: block;
 }
 
+
+/* ============================================================
+   12. SKILLS — .chip
+   Each skill is displayed as a soft rounded rectangular badge
+   in a responsive grid (2 columns tablet, 4 columns desktop).
+   ============================================================ */
 .chip {
 	border: 1px solid rgb(167 187 236 / 0.2);
-	border-radius: 0.8rem;
+	border-radius: 0.8rem;     /* slightly rounded, not a full pill */
 	padding: 0.8rem 0.9rem;
 	background: linear-gradient(140deg, rgb(80 59 49 / 0.42), rgb(112 93 86 / 0.34));
 	font-size: 0.94rem;
 }
 
+/* ============================================================
+   13. PROJECT CARDS
+   Used in the "More Projects" grid section.
+   ============================================================ */
+
+/* Each project is a dark card that lifts on hover.
+   grid-template-rows defines vertical row sizes:
+     auto auto auto 1fr auto
+     ↑    ↑    ↑    ↑   ↑
+     img  h3   p   tags links
+   The "1fr" on the description row makes it expand to fill any
+   remaining space — this keeps all cards in a row the same height
+   even when descriptions have different amounts of text. */
 .project-card {
 	display: grid;
 	grid-template-rows: auto auto auto 1fr auto;
@@ -246,21 +496,28 @@ body {
 	transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
+/* On hover: lift the card 4px upward and brighten its border +
+   shadow. The transition on .project-card makes this smooth. */
 .project-card:hover {
 	transform: translateY(-4px);
 	border-color: rgb(167 187 236 / 0.58);
 	box-shadow: 0 14px 38px rgb(2 2 2 / 0.55);
 }
 
+/* Project title */
 .project-card h3 {
 	font-size: 1.15rem;
 	font-weight: 600;
 }
 
+/* Project description — slightly muted so it doesn't compete
+   with the bolder title text above it. */
 .project-card p {
 	color: rgb(167 187 236 / 0.76);
 }
 
+/* Tech stack tag list inside project cards.
+   Same pill style as .spotlight-tags. */
 .project-card ul {
 	display: flex;
 	flex-wrap: wrap;
@@ -279,6 +536,8 @@ body {
 	color: #dbe4fa;
 }
 
+/* "Live Preview" / "Source" link text in project cards.
+   Uppercase monospace gives it a developer-tool aesthetic. */
 .project-card a {
 	font-family: var(--font-mono);
 	font-size: 0.82rem;
@@ -287,12 +546,17 @@ body {
 	color: var(--color-sky);
 }
 
+/* Row that holds the Live Preview and Source links side by side */
 .project-links {
 	display: flex;
 	gap: 1rem;
 	align-items: center;
 }
 
+/* Project screenshot thumbnail.
+   aspect-ratio: 16 / 9 forces the image to always be widescreen
+   regardless of its original dimensions.
+   object-fit: cover crops it proportionally to fill that box. */
 .project-shot {
 	width: 100%;
 	aspect-ratio: 16 / 9;
@@ -302,39 +566,86 @@ body {
 	background-color: rgb(2 2 2 / 0.65);
 }
 
+
+/* ============================================================
+   14. TIMELINE — EXPERIENCE SECTION
+   Each job entry has a vertical left-side bar (the "line") with
+   content indented to the right of it.
+   ============================================================ */
+/* ============================================================
+   14. TIMELINE — EXPERIENCE SECTION
+   Each job entry has a vertical left-side bar (the "line") with
+   content indented to the right of it.
+   ============================================================ */
 .timeline-item {
+	/* border-left creates the vertical "timeline track" line */
 	border-left: 2px solid rgb(167 187 236 / 0.32);
+	/* padding-left pushes the text away from the line */
 	padding: 0.2rem 0 0.2rem 1rem;
 }
 
+/* Date range label (e.g. "2024 - Present").
+   Monospace font + lighter color makes it feel date-stamp-like. */
 .timeline-item p:first-child {
 	font-family: var(--font-mono);
 	font-size: 0.82rem;
 	color: #cad6f5;
 }
 
+/* Job title / role name */
 .timeline-item h3 {
 	margin-top: 0.3rem;
 	font-size: 1.08rem;
 	font-weight: 600;
 }
 
+/* Job description paragraph — slightly muted */
 .timeline-item p:last-child {
 	margin-top: 0.35rem;
 	color: rgb(167 187 236 / 0.76);
 }
 
+
+/* ============================================================
+   15. HEADER & FOOTER OVERRIDES
+   !important is needed here because Tailwind utility classes
+   (applied directly in the HTML) would otherwise win the
+   specificity battle and override these rules.
+   ============================================================ */
+
+/* Sticky nav bar: very dark + blurred for a frosted-glass look.
+   backdrop-filter: blur creates the actual glass blur effect. */
 header {
 	border-color: rgb(167 187 236 / 0.2) !important;
 	background-color: rgb(2 2 2 / 0.82) !important;
 	backdrop-filter: blur(14px);
 }
 
+/* Page footer: subtle border + muted text */
 footer {
 	border-color: rgb(167 187 236 / 0.16) !important;
 	color: rgb(167 187 236 / 0.65);
 }
 
+
+/* ============================================================
+   16. SCROLL-REVEAL ANIMATION STATES
+   Elements marked with [data-reveal] in the HTML start in a
+   hidden / offset state. When JavaScript detects that the
+   element has scrolled into view, it adds the class "is-visible"
+   which triggers the CSS transition to animate the element in.
+   ============================================================ */
+
+/* BEFORE the element is visible:
+   - opacity: 0         → completely invisible
+   - translateY(24px)   → shifted 24px downward from its resting position
+   - scale(0.98)        → very slightly smaller than normal
+   These three combined create the "rising fade-in" entrance effect.
+
+   transition tells the browser HOW to animate the change:
+   - 680ms duration      → takes 0.68 seconds
+   - cubic-bezier(...)   → ease-out curve: starts fast, slows down smoothly
+                           (this feels more natural than a linear animation) */
 [data-reveal] {
 	opacity: 0;
 	transform: translateY(24px) scale(0.98);
@@ -343,12 +654,25 @@ footer {
 		transform 680ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* AFTER JavaScript adds .is-visible:
+   The element snaps to its final normal state. The transition
+   on [data-reveal] animates the change, so you see it glide in. */
 [data-reveal].is-visible {
 	opacity: 1;
 	transform: translateY(0) scale(1);
 }
 
 
+/* ============================================================
+   17. KEYFRAME ANIMATIONS
+   @keyframes defines a named animation sequence that CSS can
+   reference. "rotate-accent" is used by .hero-accent above.
+   ============================================================ */
+
+/* Continuously rotates the decorative SVG rings in the hero card
+   from 0° to 360°. Since the animation runs with "linear infinite",
+   it loops forever at a constant speed — completing one full
+   rotation every 20 seconds (set on .hero-accent above). */
 @keyframes rotate-accent {
 	from {
 		transform: rotate(0deg);
@@ -358,27 +682,50 @@ footer {
 	}
 }
 
+
+/* ============================================================
+   18. RESPONSIVE OVERRIDES — mobile screens (max-width: 768px)
+   These rules only apply when the viewport is 768px or narrower
+   (tablets in portrait mode and most phones).
+   On small screens, multi-column layouts collapse to a single
+   column and spacing is reduced to fit the narrow screen.
+   ============================================================ */
 @media (max-width: 768px) {
+	/* Spotlight card and about section collapse from 2 cols to 1 */
 	.spotlight-card,
 	.about-grid {
 		grid-template-columns: 1fr;
 	}
 
+	/* Slightly smaller decorative SVG so it fits the hero card */
 	.hero-accent {
 		width: 140px;
 		height: 140px;
 	}
 
+	/* Reduce vertical spacing between sections on mobile */
 	.section {
 		margin-top: 4.5rem;
 	}
 }
 
+
+/* ============================================================
+   19. ACCESSIBILITY — prefers-reduced-motion
+   Some users enable "Reduce Motion" in their OS settings
+   (particularly helpful for people with vestibular disorders,
+   epilepsy, or general motion sensitivity).
+   This media query detects that preference and disables all
+   animations, ensuring the site is accessible to everyone.
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
+	/* Stop the rotating SVG rings entirely */
 	.hero-accent {
 		animation: none;
 	}
 
+	/* Make all scroll-reveal elements immediately fully visible
+	   with no transition — they just appear instantly. */
 	[data-reveal] {
 		opacity: 1;
 		transform: none;

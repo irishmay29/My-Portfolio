@@ -1,4 +1,21 @@
 ---
+// ============================================================
+// WELCOME COMPONENT — src/components/Welcome.astro
+//
+// NOTE: This is the default starter component that Astro
+// generates when you create a new project. It is NOT used
+// in the portfolio (index.astro uses Layout.astro instead).
+// It is kept here as a reference for how Astro components work.
+//
+// An Astro component file has two parts:
+//   1. Frontmatter (between --- markers): JavaScript/TypeScript
+//      that runs at build time on the server.
+//   2. HTML template (below the second ---): the markup to render.
+// ============================================================
+
+// Import SVG assets as JavaScript modules.
+// Astro processes these at build time and gives us an object
+// with a `.src` property containing the final asset URL.
 import astroLogo from '../assets/astro.svg';
 import background from '../assets/background.svg';
 ---

@@ -1,6 +1,23 @@
 ---
+// ============================================================
+// PAGE: src/pages/index.astro  — the home / portfolio page
+//
+// In Astro, everything between the triple-dash fences (--- )
+// is called "frontmatter". It runs only at BUILD TIME on the
+// server — none of this code ships to the browser.
+// Here we import components and define our page data.
+// ============================================================
+
+// Import the Layout component that wraps the page with the
+// full <html>, <head>, and <body> structure (see layouts/Layout.astro).
 import Layout from '../layouts/Layout.astro';
 
+// -------------------------------------------------------
+// SKILLS LIST
+// A plain JavaScript array of strings. Each string is one
+// technology to display in the skills section grid.
+// To add a new skill just push another string into this array.
+// -------------------------------------------------------
 const skills = [
 	'HTML5',
 	'CSS3',
@@ -16,6 +33,22 @@ const skills = [
 	'Figma'
 ];
 
+// -------------------------------------------------------
+// PROJECTS DATA
+// An array of objects — each object describes one project.
+//
+// Object properties:
+//   title       — display name of the project
+//   description — one or two sentence summary shown on the card
+//   stack       — array of technology names used in the project
+//   link        — URL to the live deployed version
+//   image       — path to the preview image file
+//   repo        — URL to the GitHub source repository
+//
+// import.meta.env.BASE_URL is an Astro built-in that returns the
+// site's root path. It ensures images load correctly whether the
+// site is deployed at "/" or a subdirectory like "/portfolio/".
+// -------------------------------------------------------
 const projects = [
 	{
 		title: 'POS System',
@@ -46,9 +79,24 @@ const projects = [
 	}
 ];
 
+// -------------------------------------------------------
+// SPLITTING PROJECTS
+// featuredProject — projects[0], the first item. Gets a large
+//                   "spotlight" card treatment at the top.
+// moreProjects    — everything after the first item.
+//                   .slice(1) returns a new array starting at index 1.
+//                   These appear in the smaller project card grid.
+// -------------------------------------------------------
 const featuredProject = projects[0];
 const moreProjects = projects.slice(1);
 
+// -------------------------------------------------------
+// EXPERIENCE / WORK HISTORY
+// An array of objects describing past roles.
+//   period  — date range string (e.g. "2024 - Present")
+//   role    — job title and company name
+//   details — one-line description of key accomplishments
+// -------------------------------------------------------
 const experience = [
 	{
 		period: '2024 - Present',
@@ -63,38 +111,91 @@ const experience = [
 ];
 ---
 
+{/*
+  We pass title and description to the Layout component.
+  Layout uses them for the browser tab title and SEO meta tags.
+*/}
 <Layout title="Irish Delos Santos" description="Web developer portfolio built with Astro and Tailwind.">
+
+	{/* ── BACKGROUND OVERLAY ──────────────────────────────────────
+	     A purely decorative div that adds glowing color spots.
+	     "fixed inset-0" = covers the full screen and stays put
+	     while the user scrolls.
+	     "-z-10" (Tailwind) = sits BEHIND all visible content. */}
 	<div class="grain-bg fixed inset-0 -z-10"></div>
+
+	{/* ── NAVIGATION BAR ──────────────────────────────────────────
+	     "sticky top-0" keeps the nav pinned to the top of the
+	     viewport as the user scrolls down.
+	     "z-40" layers it above other content.
+	     "backdrop-blur" creates a frosted-glass background effect. */}
 	<header class="sticky top-0 z-40 border-b border-paper/10 bg-ink/85 backdrop-blur">
+		{/* "w-[min(1100px,92%)]" = at most 1100px wide, but never
+		     more than 92% of screen width — keeps it centered with
+		     comfortable side padding on every screen size. */}
 		<nav class="mx-auto flex w-[min(1100px,92%)] items-center justify-between py-4">
+			{/* Logo — an anchor link that jumps back to the #home section */}
 			<a href="#home" class="logo">irish</a>
+
+			{/* Navigation links — "hidden md:flex" hides them on mobile
+			     (small screens) and shows them on medium screens and up.
+			     This prevents the nav from looking cramped on phones. */}
 			<ul class="hidden gap-6 text-sm md:flex">
 				<li><a href="#about" class="nav-link">About</a></li>
 				<li><a href="#skills" class="nav-link">Skills</a></li>
 				<li><a href="#projects" class="nav-link">Projects</a></li>
 				<li><a href="#contact" class="nav-link">Contact</a></li>
 			</ul>
+
+			{/* "Hire Me" call-to-action button — also hidden on mobile */}
 			<a href="#contact" class="btn-primary hidden md:inline-flex">Hire Me</a>
 		</nav>
 	</header>
 
+	{/* ── MAIN CONTENT ────────────────────────────────────────────
+	     "id=home" makes this the scroll target for the logo link.
+	     Same centered max-width as the navbar for alignment. */}
 	<main id="home" class="mx-auto w-[min(1100px,92%)] py-16 md:py-24">
+
+		{/* ── HERO SECTION ──────────────────────────────────────────
+		     The very first thing visitors see.
+		     On desktop: two-column grid — 1.2fr text | 0.8fr card.
+		     On mobile:  single column (Tailwind's default before md:).
+		     "data-reveal" flags this element for the scroll-reveal
+		     animation (see the <script> block at the bottom). */}
 		<section class="hero-grid grid items-center gap-12 md:grid-cols-[1.2fr_0.8fr]">
+			{/* LEFT COLUMN: intro text, headline, and CTA buttons */}
 			<div class="space-y-8" data-reveal>
+				{/* Eyebrow label — small uppercase text above the heading */}
 				<p class="eyebrow">Web Developer</p>
+
+				{/* Main page headline */}
 				<h1 class="text-4xl leading-tight font-semibold text-balance md:text-6xl">
 					I build fast, clean, and conversion-focused websites.
 				</h1>
+
+				{/* Brief bio paragraph */}
 				<p class="max-w-2xl text-paper/75 md:text-lg">
 					I am Irish, a developer who turns product ideas into performant web experiences using modern
 					frontend architecture.
 				</p>
+
+				{/* Call-to-action buttons:
+				     btn-primary = filled gradient style (main action)
+				     btn-ghost   = transparent outlined style (secondary) */}
 				<div class="flex flex-wrap items-center gap-4">
 					<a href="#projects" class="btn-primary">View Projects</a>
 					<a href="mailto:irishd972@gmail.com" class="btn-ghost">irishd972@gmail.com</a>
 				</div>
 			</div>
+			{/* RIGHT COLUMN: decorative "Current Focus" info card.
+			     data-delay="120" means this element waits 120ms before
+			     starting its reveal animation — so it fades in just
+			     after the left column, creating a staggered effect. */}
 			<div class="hero-card" data-reveal data-delay="120">
+				{/* Decorative SVG: two rotating rings + crosshair lines.
+				     aria-hidden="true" hides it from screen readers because
+				     it is purely decorative — not meaningful content. */}
 				<svg class="hero-accent" viewBox="0 0 220 220" fill="none" aria-hidden="true">
 					<circle cx="110" cy="110" r="80" stroke="currentColor" stroke-width="1.5"></circle>
 					<circle cx="110" cy="110" r="52" stroke="currentColor" stroke-width="1.5"></circle>
@@ -111,26 +212,43 @@ const experience = [
 			</div>
 		</section>
 
+		{/* ── FEATURED PROJECT SECTION ──────────────────────────────
+		     Highlights the first project (projects[0]) with a large
+		     two-column spotlight card. The section tag has an id so
+		     the nav link can scroll directly to it. */}
 		<section id="featured" class="section" data-reveal>
 			<div class="section-head">
 				<p class="eyebrow">Featured Project</p>
+				{/* featuredProject.title is pulled from the projects array
+				     (it equals projects[0].title = 'POS System') */}
 				<h2 class="section-title">{featuredProject.title}</h2>
 			</div>
+			{/* spotlight-card: two-column grid — image left, info right */}
 			<article class="spotlight-card">
 				<div class="spotlight-media-wrap">
 					<img
 						src={featuredProject.image}
 						alt={`${featuredProject.title} preview`}
 						class="spotlight-media"
-						loading="lazy"
-						decoding="async"
+						loading="lazy"    {/* lazy: only downloads when the image is near the viewport — improves initial page load speed */}
+						decoding="async"  {/* async: image decoding doesn't block the browser from rendering other content */}
 					/>
 				</div>
+				{/* Right side: description, tech tags, and action buttons */}
 				<div class="spotlight-content">
 					<p class="section-copy">{featuredProject.description}</p>
+
+					{/* Tech stack tags — .map() loops over the stack array and
+					     renders a <li> for each technology name */}
 					<ul class="spotlight-tags">
 						{featuredProject.stack.map((item) => <li>{item}</li>)}
 					</ul>
+
+					{/* Action links:
+					     target="_blank"          = opens in a new browser tab
+					     rel="noopener noreferrer" = security best practice when
+					       using target="_blank": prevents the new tab from
+					       accessing or manipulating this page's window object */}
 					<div class="flex flex-wrap gap-4">
 						<a href={featuredProject.link} target="_blank" rel="noopener noreferrer" class="btn-primary">View Live</a>
 						<a href={featuredProject.repo} target="_blank" rel="noopener noreferrer" class="btn-ghost">View Source</a>
@@ -139,6 +257,9 @@ const experience = [
 			</article>
 		</section>
 
+		{/* ── ABOUT SECTION ───────────────────────────────────────────
+		     Two-column grid: bio text on the left, SVG illustration
+		     on the right. The about-grid CSS class handles the layout. */}
 		<section id="about" class="section about-grid" data-reveal>
 			<div>
 				<p class="eyebrow">About</p>
@@ -149,6 +270,9 @@ const experience = [
 					maintainability, and accessibility.
 				</p>
 			</div>
+			{/* Decorative SVG that looks like a simplified browser / editor.
+			     aria-hidden="true" hides it from screen readers — it is
+			     purely visual decoration with no informational value. */}
 			<div class="about-illustration" aria-hidden="true">
 				<svg viewBox="0 0 340 240" fill="none" role="presentation">
 					<rect x="20" y="28" width="300" height="184" rx="20" stroke="currentColor" stroke-width="2"></rect>
@@ -164,11 +288,18 @@ const experience = [
 			</div>
 		</section>
 
+		{/* ── SKILLS SECTION ──────────────────────────────────────────
+		     Renders each item from the skills[] array as a chip badge.
+		     2 columns on small screens, 4 columns on large screens. */}
 		<section id="skills" class="section" data-reveal>
 			<div class="section-head">
 				<p class="eyebrow">Skills</p>
 				<h2 class="section-title">Tools I use to ship quality software.</h2>
 			</div>
+			{/* .map() loops over every item in the skills array.
+			     We get the index (0, 1, 2...) too so each chip can delay
+			     its animation: index × 45ms creates a cascading fan-in.
+			     --delay CSS variable is read by the [data-reveal] styles. */}
 			<ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
 				{
 					skills.map((skill, index) => (
@@ -178,21 +309,31 @@ const experience = [
 			</ul>
 		</section>
 
+		{/* ── MORE PROJECTS SECTION ───────────────────────────────────
+		     Shows the remaining projects (moreProjects = projects.slice(1))
+		     as a two-column grid of cards on medium+ screens. */}
 		<section id="projects" class="section" data-reveal>
 			<div class="section-head">
 				<p class="eyebrow">More Projects</p>
 				<h2 class="section-title">Additional builds worth exploring.</h2>
 			</div>
+			{/* Loop over every remaining project and render a card.
+			     The <article> tag is semantically correct for self-contained content. */}
 			<div class="grid gap-6 md:grid-cols-2">
 				{
 					moreProjects.map((project) => (
 						<article class="project-card">
+							{/* Project preview thumbnail — lazy loaded for performance */}
 							<img src={project.image} alt={`${project.title} screenshot`} class="project-shot" loading="lazy" decoding="async" />
 							<h3>{project.title}</h3>
 							<p>{project.description}</p>
+							{/* Tech stack pill tags */}
 							<ul>
 								{project.stack.map((item) => <li>{item}</li>)}
 							</ul>
+							{/* aria-label gives screen readers a more descriptive
+							     label than just "Live Preview" / "Source" — it says
+							     which project the link belongs to. */}
 							<div class="project-links">
 								<a href={project.link} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title}`}>Live Preview</a>
 								<a href={project.repo} target="_blank" rel="noopener noreferrer" aria-label={`Open ${project.title} source`}>Source</a>
@@ -203,6 +344,9 @@ const experience = [
 			</div>
 		</section>
 
+		{/* ── EXPERIENCE / TIMELINE SECTION ──────────────────────────
+		     Renders work history entries from the experience[] array
+		     as a left-bordered vertical timeline. */}
 		<section class="section" data-reveal>
 			<div class="section-head">
 				<p class="eyebrow">Experience</p>
@@ -212,15 +356,19 @@ const experience = [
 				{
 					experience.map((item) => (
 						<article class="timeline-item">
-							<p>{item.period}</p>
-							<h3>{item.role}</h3>
-							<p>{item.details}</p>
+							<p>{item.period}</p>   {/* e.g. "2024 - Present" */}
+							<h3>{item.role}</h3>   {/* e.g. "Freelance Web Developer" */}
+							<p>{item.details}</p>  {/* one-line job description */}
 						</article>
 					))
 				}
 			</div>
 		</section>
 
+		{/* ── CONTACT SECTION ─────────────────────────────────────────
+		     Final section — invites visitors to reach out.
+		     Email opens the user's mail client via the mailto: protocol.
+		     GitHub and LinkedIn open in a new tab. */}
 		<section id="contact" class="section" data-reveal>
 			<p class="eyebrow">Contact</p>
 			<h2 class="section-title">Let us build something worth remembering.</h2>
@@ -236,27 +384,72 @@ const experience = [
 		</section>
 	</main>
 
+	{/* ── FOOTER ───────────────────────────────────────────────────
+	     Simple centered copyright line at the bottom of the page. */}
 	<footer class="border-t border-paper/10 py-8 text-center text-sm text-paper/60">
 		<p>2026 Irish Delos Santos.</p>
 	</footer>
 
+	{/* ── SCROLL REVEAL SCRIPT ─────────────────────────────────────
+	     This client-side JavaScript runs in the BROWSER (not at
+	     build time). It makes elements fade and slide into view
+	     as the user scrolls down the page.
+	     The <script> tag without any attributes outputs the JS
+	     directly into the page's HTML. */}
 	<script>
+		// Select every element that has the attribute data-reveal.
+		// These are the sections and cards we want to animate in.
 		const revealItems = document.querySelectorAll('[data-reveal]');
+
+		// IntersectionObserver is a browser API that watches elements
+		// and fires a callback whenever they enter or leave the
+		// visible area of the page (the "viewport").
+		// This is much more performant than listening to the scroll
+		// event and checking element positions manually.
 		const observer = new IntersectionObserver(
 			(entries) => {
+				// entries is an array of all observed elements that
+				// have changed state since the last callback.
 				entries.forEach((entry) => {
+					// entry.isIntersecting is true when at least
+					// `threshold` (18%) of the element is visible.
 					if (entry.isIntersecting) {
+						// Add the CSS class that triggers the animation.
+						// See [data-reveal].is-visible in global.css —
+						// it sets opacity: 1 and transform: none.
 						entry.target.classList.add('is-visible');
+
+						// Stop watching this element after it has
+						// animated in — we only want the effect once,
+						// not every time the user scrolls past it.
 						observer.unobserve(entry.target);
 					}
 				});
 			},
-			{ threshold: 0.18, rootMargin: '0px 0px -30px 0px' }
+			{
+				// threshold: 0.18 means the callback fires when 18%
+				// of the element is visible — triggers a little early
+				// so the animation starts before the element is fully on screen.
+				threshold: 0.18,
+				// rootMargin shrinks the detection zone by 30px at the
+				// bottom, so elements near the bottom of the viewport
+				// trigger slightly before reaching the very edge.
+				rootMargin: '0px 0px -30px 0px'
+			}
 		);
 
+		// Loop over every reveal item and begin observing it.
 		revealItems.forEach((item) => {
+			// Check for an optional delay. data-delay attribute is set
+			// on the hero card (120ms) and --delay CSS variable is set
+			// on each skill chip to create the cascading fan-in effect.
 			const delay = item.getAttribute('data-delay') || item.style.getPropertyValue('--delay');
+
+			// Apply the delay as a CSS transition-delay so the
+			// element waits before its animation starts.
 			if (delay) item.style.transitionDelay = delay;
+
+			// Start watching this element with the observer above.
 			observer.observe(item);
 		});
 	</script>
