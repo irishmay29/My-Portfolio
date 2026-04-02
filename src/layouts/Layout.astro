@@ -34,55 +34,55 @@ const {
 } = Astro.props;
 ---
 
-{/* Standard HTML5 doctype — tells the browser this is a modern HTML document */}
+<!-- Standard HTML5 doctype — tells the browser this is a modern HTML document -->
 <!doctype html>
 
-{/* lang="en" tells browsers, screen readers, and search engines the page language */}
+<!-- lang="en" tells browsers, screen readers, and search engines the page language -->
 <html lang="en">
 	<head>
-		{/* UTF-8 supports all languages and special characters (é, ñ, 中文, etc.) */}
+		<!-- UTF-8 supports all languages and special characters (é, ñ, 中文, etc.) -->
 		<meta charset="UTF-8" />
 
-		{/* Responsive viewport settings for mobile devices:
+		<!-- Responsive viewport settings for mobile devices:
 		    - width=device-width  → use the actual screen width, not a zoomed-out virtual one
-		    - initial-scale=1     → start at 100% zoom (not pinched in or out) */}
+		    - initial-scale=1     → start at 100% zoom (not pinched in or out) -->
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-		{/* Favicon: the tiny icon shown in the browser tab.
+		<!-- Favicon: the tiny icon shown in the browser tab.
 		    BASE_URL is an Astro variable that holds the site's base path,
-		    so the icon loads correctly whether deployed at "/" or a sub-path. */}
+		    so the icon loads correctly whether deployed at "/" or a sub-path. -->
 		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
 
-		{/* Astro automatically inserts its version number here.
-		    This is harmless metadata visible only in the HTML source. */}
+		<!-- Astro automatically inserts its version number here.
+		    This is harmless metadata visible only in the HTML source. -->
 		<meta name="generator" content={Astro.generator} />
 
-		{/* SEO description: the short paragraph that appears under the page
-		    title on Google/Bing search results. Keep it under ~160 characters. */}
+		<!-- SEO description: the short paragraph that appears under the page
+		    title on Google/Bing search results. Keep it under ~160 characters. -->
 		<meta name="description" content={description} />
 
-		{/* Open Graph tags: control how this page looks when shared on
+		<!-- Open Graph tags: control how this page looks when shared on
 		    social media platforms like Facebook, LinkedIn, Slack, etc.
-		    Without these, social previews can look broken or generic. */}
+		    Without these, social previews can look broken or generic. -->
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
 
-		{/* The text that appears on the browser tab */}
+		<!-- The text that appears on the browser tab -->
 		<title>{title}</title>
 	</head>
 
-	{/* Tailwind utility classes applied to the page body:
+	<!-- Tailwind utility classes applied to the page body:
 	    - bg-ink        → very dark near-black background (defined in global.css @theme)
 	    - text-paper    → soft blue-lavender default text color
-	    - antialiased   → smooths out font edges on most operating systems */}
+	    - antialiased   → smooths out font edges on most operating systems -->
 	<body class="bg-ink text-paper antialiased">
 
-		{/* <slot /> is Astro's special "content hole" placeholder.
+		<!-- <slot /> is Astro's special "content hole" placeholder.
 		    When a page writes <Layout>...content here...</Layout>,
 		    everything inside gets dropped in right at this spot.
 		    Think of it like a picture frame — Layout is the frame,
-		    <slot /> is where the actual picture goes. */}
+		    <slot /> is where the actual picture goes. -->
 		<slot />
 	</body>
 </html>

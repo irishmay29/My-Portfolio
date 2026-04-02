@@ -226,12 +226,15 @@ const experience = [
 			{/* spotlight-card: two-column grid — image left, info right */}
 			<article class="spotlight-card">
 				<div class="spotlight-media-wrap">
+					{/* Performance notes:
+					     loading="lazy" defers image loading until near viewport.
+					     decoding="async" avoids blocking main rendering while decoding. */}
 					<img
 						src={featuredProject.image}
 						alt={`${featuredProject.title} preview`}
 						class="spotlight-media"
-						loading="lazy"    {/* lazy: only downloads when the image is near the viewport — improves initial page load speed */}
-						decoding="async"  {/* async: image decoding doesn't block the browser from rendering other content */}
+						loading="lazy"
+						decoding="async"
 					/>
 				</div>
 				{/* Right side: description, tech tags, and action buttons */}
@@ -399,7 +402,8 @@ const experience = [
 	<script>
 		// Select every element that has the attribute data-reveal.
 		// These are the sections and cards we want to animate in.
-		const revealItems = document.querySelectorAll('[data-reveal]');
+		// Use <HTMLElement> so TypeScript knows each item has .style.
+		const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
 
 		// IntersectionObserver is a browser API that watches elements
 		// and fires a callback whenever they enter or leave the
@@ -443,11 +447,15 @@ const experience = [
 			// Check for an optional delay. data-delay attribute is set
 			// on the hero card (120ms) and --delay CSS variable is set
 			// on each skill chip to create the cascading fan-in effect.
-			const delay = item.getAttribute('data-delay') || item.style.getPropertyValue('--delay');
+			const dataDelay = item.getAttribute('data-delay');
+			const cssDelay = item.style.getPropertyValue('--delay');
+			const delay = dataDelay || cssDelay;
 
 			// Apply the delay as a CSS transition-delay so the
 			// element waits before its animation starts.
-			if (delay) item.style.transitionDelay = delay;
+			if (delay) {
+				item.style.transitionDelay = delay;
+			}
 
 			// Start watching this element with the observer above.
 			observer.observe(item);
