@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <rect width="1280" height="720" rx="28" fill="#020202"/>
+  <rect x="32" y="32" width="1216" height="656" rx="22" fill="#16110f" stroke="#503B31"/>
+  <rect x="72" y="84" width="250" height="552" rx="16" fill="#503B31"/>
+  <rect x="360" y="84" width="848" height="74" rx="14" fill="#2B2320"/>
+  <rect x="390" y="106" width="220" height="28" rx="8" fill="#A7BBEC" fill-opacity="0.82"/>
+  <rect x="72" y="84" width="250" height="66" rx="14" fill="#705D56"/>
+  <g fill="#2B2320">
+    <rect x="360" y="186" width="258" height="178" rx="14"/>
+    <rect x="640" y="186" width="258" height="178" rx="14"/>
+    <rect x="920" y="186" width="258" height="178" rx="14"/>
+    <rect x="360" y="388" width="258" height="178" rx="14"/>
+    <rect x="640" y="388" width="258" height="178" rx="14"/>
+  </g>
+  <rect x="920" y="388" width="288" height="248" rx="16" fill="#503B31"/>
+  <rect x="952" y="422" width="224" height="18" rx="9" fill="#A7BBEC" fill-opacity="0.78"/>
+  <rect x="952" y="454" width="188" height="14" rx="7" fill="#9097C0" fill-opacity="0.66"/>
+  <rect x="952" y="478" width="201" height="14" rx="7" fill="#9097C0" fill-opacity="0.66"/>
+  <rect x="952" y="572" width="224" height="40" rx="10" fill="#A7BBEC"/>
+  <circle cx="1166" cy="106" r="8" fill="#A7BBEC"/>
+  <text x="90" y="125" fill="#A7BBEC" font-size="24" font-family="Space Mono, monospace">POS System</text>
+</svg>
