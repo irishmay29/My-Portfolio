@@ -1,5 +1,11 @@
 # build output
 dist/
+/_astro/
+/projects/
+/index.html
+/.nojekyll
+/favicon.ico
+/favicon.svg
 
 # generated types
 .astro/

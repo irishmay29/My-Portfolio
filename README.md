@@ -1,46 +1,30 @@
-# Astro Starter Kit: Basics
+# My-Portfolio
 
-```sh
-npm create astro@latest -- --template basics
-```
+Portfolio site built with Astro and Tailwind CSS.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Local development
 
-## 🚀 Project Structure
+1. `npm install`
+2. `npm run dev`
 
-Inside of your Astro project, you'll see the following folders and files:
+## Build
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+1. `npm run build`
+2. Output is generated in `dist/`
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## GitHub Pages deployment (automated)
 
-## 🧞 Commands
+This repository deploys via GitHub Actions workflow in `.github/workflows/deploy.yml`.
 
-All commands are run from the root of the project, from a terminal:
+Required GitHub setting:
+1. Repository `Settings` -> `Pages`
+2. `Build and deployment` -> `Source`
+3. Select `GitHub Actions`
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+If Pages is set to `Deploy from a branch`, GitHub may render the repository README instead of the site.
 
-## 👀 Want to learn more?
+## Scripts
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `npm run dev` - start dev server
+- `npm run build` - production build
+- `npm run preview` - preview build
