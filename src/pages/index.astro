@@ -285,16 +285,39 @@ const experience = [
 			     aria-hidden="true" hides it from screen readers — it is
 			     purely visual decoration with no informational value. */}
 			<div class="about-illustration" aria-hidden="true">
-				<svg viewBox="0 0 340 240" fill="none" role="presentation">
-					<rect x="20" y="28" width="300" height="184" rx="20" stroke="currentColor" stroke-width="2"></rect>
-					<rect x="58" y="70" width="94" height="66" rx="10" fill="currentColor" fill-opacity="0.18"></rect>
-					<rect x="174" y="70" width="108" height="12" rx="6" fill="currentColor" fill-opacity="0.5"></rect>
-					<rect x="174" y="92" width="84" height="10" rx="5" fill="currentColor" fill-opacity="0.36"></rect>
-					<rect x="174" y="111" width="70" height="10" rx="5" fill="currentColor" fill-opacity="0.3"></rect>
-					<path d="M60 170H280" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-					<circle cx="70" cy="44" r="5"></circle>
-					<circle cx="88" cy="44" r="5"></circle>
-					<circle cx="106" cy="44" r="5"></circle>
+				<svg viewBox="0 0 360 250" fill="none" role="presentation">
+					<defs>
+						<linearGradient id="aboutFlow" x1="44" y1="38" x2="304" y2="212" gradientUnits="userSpaceOnUse">
+							<stop stop-color="currentColor" stop-opacity="0.44"></stop>
+							<stop offset="1" stop-color="currentColor" stop-opacity="0.15"></stop>
+						</linearGradient>
+						<linearGradient id="aboutGlow" x1="0" y1="0" x2="1" y2="1">
+							<stop stop-color="currentColor" stop-opacity="0.42"></stop>
+							<stop offset="1" stop-color="currentColor" stop-opacity="0.12"></stop>
+						</linearGradient>
+					</defs>
+
+					<rect x="16" y="22" width="328" height="206" rx="22" stroke="url(#aboutFlow)" stroke-width="2"></rect>
+					<rect x="38" y="44" width="284" height="164" rx="14" fill="currentColor" fill-opacity="0.08"></rect>
+
+					<rect x="58" y="68" width="110" height="92" rx="10" fill="url(#aboutGlow)"></rect>
+					<rect x="74" y="85" width="78" height="8" rx="4" fill="currentColor" fill-opacity="0.54"></rect>
+					<rect x="74" y="100" width="64" height="7" rx="3.5" fill="currentColor" fill-opacity="0.34"></rect>
+					<rect x="74" y="113" width="72" height="7" rx="3.5" fill="currentColor" fill-opacity="0.3"></rect>
+					<rect x="74" y="126" width="46" height="7" rx="3.5" fill="currentColor" fill-opacity="0.26"></rect>
+
+					<path d="M198 90H284" stroke="currentColor" stroke-opacity="0.44" stroke-width="9" stroke-linecap="round"></path>
+					<path d="M198 110H270" stroke="currentColor" stroke-opacity="0.28" stroke-width="8" stroke-linecap="round"></path>
+					<path d="M198 129H254" stroke="currentColor" stroke-opacity="0.22" stroke-width="8" stroke-linecap="round"></path>
+
+					<path d="M57 182C86 154 124 208 152 182C181 156 219 205 247 182C268 165 287 174 304 190" stroke="currentColor" stroke-opacity="0.58" stroke-width="3" stroke-linecap="round"></path>
+					<circle cx="58" cy="182" r="5" fill="currentColor" fill-opacity="0.68"></circle>
+					<circle cx="152" cy="182" r="5" fill="currentColor" fill-opacity="0.68"></circle>
+					<circle cx="247" cy="182" r="5" fill="currentColor" fill-opacity="0.68"></circle>
+
+					<circle cx="58" cy="34" r="4.2" fill="currentColor" fill-opacity="0.5"></circle>
+					<circle cx="74" cy="34" r="4.2" fill="currentColor" fill-opacity="0.35"></circle>
+					<circle cx="90" cy="34" r="4.2" fill="currentColor" fill-opacity="0.22"></circle>
 				</svg>
 			</div>
 		</section>
