@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" fill="none">
+  <rect width="1280" height="720" rx="28" fill="#020202"/>
+  <rect x="32" y="32" width="1216" height="656" rx="22" fill="#15110f" stroke="#503B31"/>
+  <rect x="76" y="86" width="462" height="560" rx="16" fill="#2C2522"/>
+  <rect x="562" y="86" width="642" height="230" rx="16" fill="#503B31"/>
+  <rect x="562" y="338" width="642" height="308" rx="16" fill="#2C2522"/>
+  <rect x="100" y="128" width="416" height="28" rx="8" fill="#A7BBEC" fill-opacity="0.9"/>
+  <rect x="100" y="178" width="320" height="16" rx="8" fill="#9097C0" fill-opacity="0.8"/>
+  <rect x="100" y="206" width="372" height="16" rx="8" fill="#9097C0" fill-opacity="0.8"/>
+  <rect x="100" y="234" width="298" height="16" rx="8" fill="#9097C0" fill-opacity="0.8"/>
+  <rect x="594" y="126" width="250" height="20" rx="10" fill="#A7BBEC" fill-opacity="0.85"/>
+  <rect x="594" y="376" width="442" height="24" rx="10" fill="#A7BBEC" fill-opacity="0.85"/>
+  <rect x="594" y="416" width="560" height="14" rx="7" fill="#9097C0" fill-opacity="0.7"/>
+  <rect x="594" y="442" width="524" height="14" rx="7" fill="#9097C0" fill-opacity="0.7"/>
+  <text x="90" y="124" fill="#A7BBEC" font-size="24" font-family="Space Mono, monospace">Nomad Notes</text>
+</svg>
