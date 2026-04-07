@@ -47,9 +47,15 @@ const withBase = (assetPath: string) => {
 	return `${baseUrl}${normalizedAssetPath}`;
 };
 
-const emailJsPublicKey = import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY || '';
-const emailJsServiceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID || '';
-const emailJsTemplateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID || '';
+const emailJsFallbackConfig = {
+	publicKey: 'RWZ1YLN0mBQ3KG_g7',
+	serviceId: 'service_rykq6d9',
+	templateId: 'template_cfp06vg'
+};
+
+const emailJsPublicKey = import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY || emailJsFallbackConfig.publicKey;
+const emailJsServiceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID || emailJsFallbackConfig.serviceId;
+const emailJsTemplateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID || emailJsFallbackConfig.templateId;
 
 // -------------------------------------------------------
 // PROJECTS DATA
