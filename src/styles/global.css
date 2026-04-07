@@ -605,6 +605,138 @@ body {
 	color: rgb(167 187 236 / 0.76);
 }
 
+/* ============================================================
+   CONTACT FORM
+   ============================================================ */
+.contact-form {
+   display: grid;
+   gap: 0.95rem;
+   max-width: 760px;
+}
+
+.contact-grid {
+   display: grid;
+   gap: 0.95rem;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.contact-field {
+   position: relative;
+   display: block;
+}
+
+.float-label {
+   position: absolute;
+   top: 50%;
+   left: 0.9rem;
+   transform: translateY(-50%);
+   font-family: var(--font-mono);
+   font-size: 0.72rem;
+   letter-spacing: 0.12em;
+   text-transform: uppercase;
+   color: rgb(167 187 236 / 0.72);
+   pointer-events: none;
+   transition: top 160ms ease, transform 160ms ease, color 160ms ease;
+}
+
+.contact-field textarea + .float-label {
+   top: 1rem;
+   transform: none;
+}
+
+.contact-field input,
+.contact-field textarea {
+   width: 100%;
+   border: 1px solid rgb(167 187 236 / 0.26);
+   border-radius: 0.8rem;
+   background: linear-gradient(145deg, rgb(80 59 49 / 0.38), rgb(2 2 2 / 0.66));
+   color: #dbe4fa;
+   outline: none;
+   transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.contact-field input {
+	padding: 0.9rem;
+}
+
+.contact-field textarea {
+	padding: 1.15rem 0.9rem 0.55rem;
+}
+
+.contact-field input::placeholder,
+.contact-field textarea::placeholder {
+   color: transparent;
+}
+
+.contact-field input:focus,
+.contact-field textarea:focus {
+   border-color: rgb(167 187 236 / 0.62);
+   box-shadow: 0 0 0 3px rgb(167 187 236 / 0.16);
+}
+
+.contact-field input:focus + .float-label,
+.contact-field input:not(:placeholder-shown) + .float-label,
+.contact-field textarea:focus + .float-label,
+.contact-field textarea:not(:placeholder-shown) + .float-label {
+   top: 0;
+   transform: translateY(-50%) scale(0.92);
+   color: #dbe4fa;
+   background-color: #1a1513;
+   padding: 0 0.3rem;
+}
+
+.field-error {
+   display: block;
+   min-height: 1rem;
+   margin-top: 0.35rem;
+   padding-left: 0.2rem;
+   font-family: var(--font-mono);
+   font-size: 0.68rem;
+   letter-spacing: 0.04em;
+   color: #f3b2b2;
+}
+
+.contact-field.has-error input,
+.contact-field.has-error textarea {
+   border-color: rgb(243 178 178 / 0.92);
+   box-shadow: 0 0 0 3px rgb(243 178 178 / 0.14);
+}
+
+.contact-field.has-error .float-label {
+   color: #f3b2b2;
+}
+
+.contact-form .btn-primary[disabled] {
+   opacity: 0.72;
+   cursor: not-allowed;
+   transform: none;
+}
+
+.form-status {
+   min-height: 1.1rem;
+   font-family: var(--font-mono);
+   font-size: 0.73rem;
+   letter-spacing: 0.04em;
+   color: rgb(167 187 236 / 0.7);
+}
+
+.form-status.is-sending {
+   color: rgb(167 187 236 / 0.82);
+}
+
+.form-status.is-success {
+   color: #a4e4bb;
+}
+
+.form-status.is-error {
+   color: #f3b2b2;
+}
+
+.contact-field textarea {
+   resize: vertical;
+   min-height: 130px;
+}
+
 
 /* ============================================================
    15. HEADER & FOOTER OVERRIDES
@@ -696,6 +828,10 @@ footer {
 	.about-grid {
 		grid-template-columns: 1fr;
 	}
+
+   .contact-grid {
+      grid-template-columns: 1fr;
+   }
 
 	/* Slightly smaller decorative SVG so it fits the hero card */
 	.hero-accent {
