@@ -94,6 +94,7 @@
    jumping instantly to that section. */
 html {
 	scroll-behavior: smooth;
+	scroll-padding-top: 5rem;
 }
 
 /* Page-level styles applied to the entire document body.
@@ -118,21 +119,99 @@ body {
 
 
 /* ============================================================
-   5. GRAIN / NOISE OVERLAY — .grain-bg
-   A fixed decorative layer that adds extra glowing color spots
-   on top of the body background.
-   - fixed + inset-0 (in Tailwind): the div stays in place
-     while the user scrolls, covering the entire viewport.
+   5. FLUID BACKGROUND — .grain-bg
+   Abstract fluid / marble-art animated background.
+   Multiple blurred gradient blobs drift, swirl, and morph
+   to create a rich liquid-paint look inspired by fluid art.
+   - fixed + inset-0 (in Tailwind): stays in place while scrolling.
    - -z-10 (Tailwind): placed behind ALL other content.
-   - opacity 0.85: slightly transparent so the body gradient
-     still shows through.
    ============================================================ */
 .grain-bg {
-	background-image:
-		radial-gradient(circle at 84% 6%, rgb(167 187 236 / 0.24), transparent 26%),
-		radial-gradient(circle at 14% 78%, rgb(112 93 86 / 0.32), transparent 34%),
-		linear-gradient(transparent 92%, rgb(167 187 236 / 0.06) 100%);
-	opacity: 0.85;
+	overflow: hidden;
+}
+
+/* Shared blob base */
+.fluid-blob {
+	position: absolute;
+	border-radius: 50%;
+	filter: blur(90px);
+	pointer-events: none;
+	will-change: transform, opacity;
+}
+
+/* Blob 1 — large blue-lavender, top-left swirl */
+.fluid-blob-1 {
+	width: 60vw;
+	height: 60vh;
+	top: -10%;
+	left: -10%;
+	background: radial-gradient(
+		ellipse at 40% 40%,
+		rgb(100 130 220 / 0.45),
+		rgb(144 151 192 / 0.3) 50%,
+		transparent 75%
+	);
+	animation: fluid-swirl-1 16s ease-in-out infinite alternate;
+}
+
+/* Blob 2 — deep purple / indigo, center-right */
+.fluid-blob-2 {
+	width: 50vw;
+	height: 55vh;
+	top: 20%;
+	right: -8%;
+	background: radial-gradient(
+		ellipse at 55% 50%,
+		rgb(90 70 160 / 0.4),
+		rgb(70 55 130 / 0.25) 50%,
+		transparent 70%
+	);
+	animation: fluid-swirl-2 20s ease-in-out infinite alternate;
+}
+
+/* Blob 3 — warm teal / cyan accent, bottom-left */
+.fluid-blob-3 {
+	width: 45vw;
+	height: 50vh;
+	bottom: -5%;
+	left: 5%;
+	background: radial-gradient(
+		ellipse at 45% 55%,
+		rgb(60 160 180 / 0.35),
+		rgb(80 130 160 / 0.2) 55%,
+		transparent 75%
+	);
+	animation: fluid-swirl-3 18s ease-in-out infinite alternate;
+}
+
+/* Blob 4 — warm brown / amber, center area */
+.fluid-blob-4 {
+	width: 40vw;
+	height: 40vh;
+	top: 35%;
+	left: 25%;
+	background: radial-gradient(
+		ellipse at 50% 50%,
+		rgb(140 95 60 / 0.3),
+		rgb(112 93 86 / 0.2) 50%,
+		transparent 70%
+	);
+	animation: fluid-swirl-4 22s ease-in-out infinite alternate;
+}
+
+/* Blob 5 — bright lavender highlight, top-right float */
+.fluid-blob-5 {
+	width: 35vw;
+	height: 35vh;
+	top: 5%;
+	right: 15%;
+	background: radial-gradient(
+		ellipse at 50% 45%,
+		rgb(167 187 236 / 0.4),
+		rgb(160 170 220 / 0.2) 50%,
+		transparent 70%
+	);
+	animation: fluid-swirl-5 14s ease-in-out infinite alternate;
 }
 
 /* ============================================================
@@ -223,6 +302,12 @@ body {
 .btn-ghost:hover {
 	border-color: rgb(167 187 236 / 0.5);
 	background-color: rgb(80 59 49 / 0.5);
+}
+
+/* RGB glow on hover for all buttons except the Hire Me (.btn-rgb-glow) button */
+.btn-primary:not(.btn-rgb-glow):hover,
+.btn-ghost:hover {
+	animation: rgb-glow-hover 3s linear infinite;
 }
 
 /* ============================================================
@@ -748,9 +833,18 @@ body {
 /* Sticky nav bar: very dark + blurred for a frosted-glass look.
    backdrop-filter: blur creates the actual glass blur effect. */
 header {
-	border-color: rgb(167 187 236 / 0.2) !important;
-	background-color: rgb(2 2 2 / 0.82) !important;
-	backdrop-filter: blur(14px);
+	border-color: rgb(167 187 236 / 0.15) !important;
+	background: linear-gradient(
+		135deg,
+		rgb(167 187 236 / 0.08) 0%,
+		rgb(2 2 2 / 0.3) 50%,
+		rgb(144 151 192 / 0.06) 100%
+	) !important;
+	backdrop-filter: blur(20px) saturate(1.4);
+	-webkit-backdrop-filter: blur(20px) saturate(1.4);
+	box-shadow:
+		0 4px 30px rgb(0 0 0 / 0.25),
+		inset 0 1px 0 rgb(167 187 236 / 0.12);
 }
 
 /* Page footer: subtle border + muted text */
@@ -814,6 +908,77 @@ footer {
 	}
 }
 
+/* RGB cycling glow used on the "Hire Me" nav button */
+@keyframes rgb-glow {
+	0%   { box-shadow: 0 0 12px 3px rgba(255, 0, 0, 0.6),   0 0 32px 6px rgba(255, 0, 0, 0.25); }
+	16%  { box-shadow: 0 0 12px 3px rgba(255, 165, 0, 0.6), 0 0 32px 6px rgba(255, 165, 0, 0.25); }
+	33%  { box-shadow: 0 0 12px 3px rgba(255, 255, 0, 0.6), 0 0 32px 6px rgba(255, 255, 0, 0.25); }
+	50%  { box-shadow: 0 0 12px 3px rgba(0, 255, 0, 0.6),   0 0 32px 6px rgba(0, 255, 0, 0.25); }
+	66%  { box-shadow: 0 0 12px 3px rgba(0, 128, 255, 0.6), 0 0 32px 6px rgba(0, 128, 255, 0.25); }
+	83%  { box-shadow: 0 0 12px 3px rgba(128, 0, 255, 0.6), 0 0 32px 6px rgba(128, 0, 255, 0.25); }
+	100% { box-shadow: 0 0 12px 3px rgba(255, 0, 0, 0.6),   0 0 32px 6px rgba(255, 0, 0, 0.25); }
+}
+
+.btn-rgb-glow {
+	animation: rgb-glow 4s linear infinite;
+}
+
+.btn-rgb-glow:hover {
+	animation-duration: 2s;
+}
+
+/* RGB glow for non-Hire-Me buttons on hover — same cycle, slightly softer */
+@keyframes rgb-glow-hover {
+	0%   { box-shadow: 0 0 10px 2px rgba(255, 0, 0, 0.5),   0 0 26px 5px rgba(255, 0, 0, 0.2); }
+	16%  { box-shadow: 0 0 10px 2px rgba(255, 165, 0, 0.5), 0 0 26px 5px rgba(255, 165, 0, 0.2); }
+	33%  { box-shadow: 0 0 10px 2px rgba(255, 255, 0, 0.5), 0 0 26px 5px rgba(255, 255, 0, 0.2); }
+	50%  { box-shadow: 0 0 10px 2px rgba(0, 255, 0, 0.5),   0 0 26px 5px rgba(0, 255, 0, 0.2); }
+	66%  { box-shadow: 0 0 10px 2px rgba(0, 128, 255, 0.5), 0 0 26px 5px rgba(0, 128, 255, 0.2); }
+	83%  { box-shadow: 0 0 10px 2px rgba(128, 0, 255, 0.5), 0 0 26px 5px rgba(128, 0, 255, 0.2); }
+	100% { box-shadow: 0 0 10px 2px rgba(255, 0, 0, 0.5),   0 0 26px 5px rgba(255, 0, 0, 0.2); }
+}
+
+/* Fluid background swirl animations — rich marble-art motion */
+@keyframes fluid-swirl-1 {
+	0%   { transform: translate(0, 0) rotate(0deg) scale(1);       opacity: 0.7; }
+	25%  { transform: translate(8%, 5%) rotate(15deg) scale(1.15);  opacity: 1; }
+	50%  { transform: translate(-5%, 10%) rotate(-10deg) scale(0.9); opacity: 0.65; }
+	75%  { transform: translate(6%, -4%) rotate(20deg) scale(1.1);  opacity: 0.9; }
+	100% { transform: translate(-3%, 7%) rotate(-5deg) scale(1.05); opacity: 0.75; }
+}
+
+@keyframes fluid-swirl-2 {
+	0%   { transform: translate(0, 0) rotate(0deg) scale(1);        opacity: 0.6; }
+	25%  { transform: translate(-7%, -6%) rotate(-18deg) scale(1.12); opacity: 0.95; }
+	50%  { transform: translate(4%, -8%) rotate(12deg) scale(0.92);  opacity: 0.55; }
+	75%  { transform: translate(-5%, 6%) rotate(-8deg) scale(1.18);  opacity: 1; }
+	100% { transform: translate(3%, -3%) rotate(14deg) scale(1.02);  opacity: 0.65; }
+}
+
+@keyframes fluid-swirl-3 {
+	0%   { transform: translate(0, 0) rotate(0deg) scale(1);        opacity: 0.65; }
+	25%  { transform: translate(6%, -7%) rotate(22deg) scale(1.1);   opacity: 1; }
+	50%  { transform: translate(-8%, -3%) rotate(-15deg) scale(1.2); opacity: 0.6; }
+	75%  { transform: translate(3%, 8%) rotate(8deg) scale(0.95);    opacity: 0.9; }
+	100% { transform: translate(-4%, 5%) rotate(-12deg) scale(1.08); opacity: 0.7; }
+}
+
+@keyframes fluid-swirl-4 {
+	0%   { transform: translate(0, 0) rotate(0deg) scale(1);         opacity: 0.55; }
+	25%  { transform: translate(-6%, 8%) rotate(-20deg) scale(1.15);  opacity: 0.9; }
+	50%  { transform: translate(7%, 4%) rotate(16deg) scale(0.88);    opacity: 1; }
+	75%  { transform: translate(-3%, -6%) rotate(-6deg) scale(1.22);  opacity: 0.6; }
+	100% { transform: translate(5%, -2%) rotate(10deg) scale(1.04);   opacity: 0.8; }
+}
+
+@keyframes fluid-swirl-5 {
+	0%   { transform: translate(0, 0) rotate(0deg) scale(1);        opacity: 0.7; }
+	25%  { transform: translate(5%, 6%) rotate(-14deg) scale(1.18);  opacity: 0.55; }
+	50%  { transform: translate(-6%, 3%) rotate(20deg) scale(0.94);  opacity: 1; }
+	75%  { transform: translate(4%, -7%) rotate(-10deg) scale(1.12); opacity: 0.65; }
+	100% { transform: translate(-2%, 4%) rotate(8deg) scale(1.06);   opacity: 0.85; }
+}
+
 
 /* ============================================================
    18. RESPONSIVE OVERRIDES — mobile screens (max-width: 768px)
@@ -857,6 +1022,11 @@ footer {
 @media (prefers-reduced-motion: reduce) {
 	/* Stop the rotating SVG rings entirely */
 	.hero-accent {
+		animation: none;
+	}
+
+	/* Disable fluid background animations */
+	.fluid-blob {
 		animation: none;
 	}
 
