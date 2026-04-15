@@ -732,12 +732,15 @@ body {
 .contact-field input,
 .contact-field textarea {
    width: 100%;
-   border: 1px solid rgb(167 187 236 / 0.26);
+   border: 1px solid rgb(167 187 236 / 0.22);
    border-radius: 0.8rem;
-   background: linear-gradient(145deg, rgb(80 59 49 / 0.38), rgb(2 2 2 / 0.66));
+   background: rgba(255 255 255 / 0.06);
+   backdrop-filter: blur(14px);
+   -webkit-backdrop-filter: blur(14px);
+   box-shadow: 0 4px 24px rgba(0 0 0 / 0.18), inset 0 1px 0 rgba(255 255 255 / 0.08);
    color: #dbe4fa;
    outline: none;
-   transition: border-color 160ms ease, box-shadow 160ms ease;
+   transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
 .contact-field input {
@@ -755,8 +758,9 @@ body {
 
 .contact-field input:focus,
 .contact-field textarea:focus {
-   border-color: rgb(167 187 236 / 0.62);
-   box-shadow: 0 0 0 3px rgb(167 187 236 / 0.16);
+   border-color: rgb(167 187 236 / 0.5);
+   background: rgba(255 255 255 / 0.1);
+   box-shadow: 0 4px 24px rgba(0 0 0 / 0.22), inset 0 1px 0 rgba(255 255 255 / 0.1), 0 0 0 3px rgb(167 187 236 / 0.16);
 }
 
 .contact-field input:focus + .float-label,
