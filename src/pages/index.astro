@@ -37,6 +37,14 @@ const skills = [
 	'PHP',
 	'RazorSQL',
 	'Java',
+	'Claude AI',
+	'Microsoft Office',
+	'Google Workspace',
+	'VS Code',
+	'Slacks',
+	'Salesforce',
+	'GoldMine'
+
 ];
 
 const withBase = (assetPath: string) => {
@@ -141,7 +149,9 @@ const experience = [
 			'Navigate databases using PostgreSQL and RazorSQL.',
 			'Assist in client meetings by taking notes on requirements and helping ensure implementation.',
 			'Perform quality assurance testing to verify software reliability, functionality, and performance before release.',
-			'Provide help desk support by diagnosing and resolving hardware, software, and network issues for employees or customers.'
+			'Provide help desk support by diagnosing and resolving hardware, software, and network issues for employees or customers.',
+			'Performed on‑site installation, setup, and functional testing of Topcon eye‑imaging cameras for optical clinics.',
+			'Conducted user training sessions for optical staff, covering system operation, troubleshooting, and best‑practice imaging techniques.'
 		]
 	},
 	{
@@ -294,8 +304,9 @@ const experience = [
 				     btn-primary = filled gradient style (main action)
 				     btn-ghost   = transparent outlined style (secondary) */}
 				<div class="flex flex-wrap items-center gap-4">
-					<a href="#projects" class="btn-primary">View Projects</a>
+					{/*<a href="#projects" class="btn-primary">View Projects</a>*/}
 					<a href="mailto:irishd972@gmail.com" class="btn-ghost">irishd972@gmail.com</a>
+					<a href={withBase('irish-delos-santos-cv.pdf')} download class="btn-primary">Download CV</a>
 				</div>
 			</div>
 			{/* RIGHT COLUMN: decorative "Current Focus" info card.
@@ -636,6 +647,132 @@ const experience = [
 			// Start watching this element with the observer above.
 			observer.observe(item);
 		});
+
+		// Mouse sparkle trail using the existing CSS palette tokens.
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+		if (!reduceMotion && supportsFinePointer) {
+			const sparkleLayer = document.createElement('div');
+			sparkleLayer.className = 'sparkle-trail-layer';
+			sparkleLayer.setAttribute('aria-hidden', 'true');
+			document.body.appendChild(sparkleLayer);
+
+			const rootStyles = getComputedStyle(document.documentElement);
+			const palette = [
+				rootStyles.getPropertyValue('--color-paper').trim(),
+				rootStyles.getPropertyValue('--color-sun').trim(),
+				rootStyles.getPropertyValue('--color-mint').trim(),
+				rootStyles.getPropertyValue('--color-walnut').trim()
+			].filter(Boolean);
+
+			const hexToRgba = (hex: string, alpha: number) => {
+				const value = hex.replace('#', '');
+				if (![3, 6].includes(value.length)) {
+					return `rgb(167 187 236 / ${alpha})`;
+				}
+
+				const fullHex = value.length === 3 ? value.split('').map((char) => char + char).join('') : value;
+				const red = Number.parseInt(fullHex.slice(0, 2), 16);
+				const green = Number.parseInt(fullHex.slice(2, 4), 16);
+				const blue = Number.parseInt(fullHex.slice(4, 6), 16);
+				return `rgb(${red} ${green} ${blue} / ${alpha})`;
+			};
+
+			let lastSpawn = 0;
+			const minInterval = 16;
+
+			// Track the last known mouse position so scroll can reuse it
+			let mouseX = -999;
+			let mouseY = -999;
+			let hasMousePos = false;
+
+			const spawnSparkle = (x: number, y: number) => {
+				const sparkle = document.createElement('span');
+				sparkle.className = 'sparkle-particle';
+				const size = 3 + Math.random() * 5;
+				const life = 320 + Math.random() * 220;
+				const dx = (Math.random() - 0.5) * 34;
+				const dy = -4 - Math.random() * 24;
+				const turn = `${Math.random() * 180}deg`;
+				const color = palette.length
+					? hexToRgba(palette[Math.floor(Math.random() * palette.length)], 0.9)
+					: 'rgb(167 187 236 / 0.9)';
+
+				sparkle.style.setProperty('--x', `${x}px`);
+				sparkle.style.setProperty('--y', `${y}px`);
+				sparkle.style.setProperty('--dx', `${dx.toFixed(1)}px`);
+				sparkle.style.setProperty('--dy', `${dy.toFixed(1)}px`);
+				sparkle.style.setProperty('--size', `${size.toFixed(1)}px`);
+				sparkle.style.setProperty('--life', `${life.toFixed(0)}ms`);
+				sparkle.style.setProperty('--sparkle-color', color);
+				sparkle.style.setProperty('--turn', turn);
+
+				sparkle.addEventListener('animationend', () => {
+					sparkle.remove();
+				});
+
+				sparkleLayer.appendChild(sparkle);
+			};
+
+			window.addEventListener(
+				'pointermove',
+				(event) => {
+					if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+
+					mouseX = event.clientX;
+					mouseY = event.clientY;
+					hasMousePos = true;
+
+					const now = performance.now();
+					if (now - lastSpawn < minInterval) return;
+					lastSpawn = now;
+
+					spawnSparkle(event.clientX, event.clientY);
+					if (Math.random() > 0.35) {
+						spawnSparkle(event.clientX + (Math.random() - 0.5) * 12, event.clientY + (Math.random() - 0.5) * 8);
+					}
+					if (Math.random() > 0.75) {
+						spawnSparkle(event.clientX + (Math.random() - 0.5) * 18, event.clientY + (Math.random() - 0.5) * 10);
+					}
+				},
+				{ passive: true }
+			);
+
+			// Fire sparkles along the scroll direction from the cursor
+			let prevScrollY = window.scrollY;
+			window.addEventListener(
+				'scroll',
+				() => {
+					if (!hasMousePos) return;
+
+					const now = performance.now();
+					const currentScrollY = window.scrollY;
+					// positive = scrolled up, negative = scrolled down
+					const deltaY = prevScrollY - currentScrollY;
+					prevScrollY = currentScrollY;
+
+					if (deltaY === 0) return;
+
+					// Distribute sparkles along the scroll path
+					const steps = Math.min(Math.ceil(Math.abs(deltaY) / 6), 8);
+					for (let i = 0; i < steps; i++) {
+						if (now - lastSpawn < minInterval / 2) break;
+						lastSpawn = now;
+						const t = steps > 1 ? i / (steps - 1) : 0;
+						const spawnY = mouseY + deltaY * t;
+						spawnSparkle(mouseX, spawnY);
+						if (Math.random() > 0.45) {
+							spawnSparkle(
+								mouseX + (Math.random() - 0.5) * 12,
+								spawnY + (Math.random() - 0.5) * 6
+							);
+						}
+					}
+				},
+				{ passive: true }
+			);
+		}
 
 		// Custom contact form validation so errors match site styling.
 		const contactForm = document.querySelector<HTMLFormElement>('.contact-form');

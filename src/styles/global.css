@@ -892,6 +892,85 @@ footer {
 	transform: translateY(0) scale(1);
 }
 
+/* ============================================================
+   Mouse sparkle trail layer and particles
+   ============================================================ */
+.sparkle-trail-layer {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 70;
+	overflow: hidden;
+}
+
+.sparkle-particle {
+	position: absolute;
+	width: var(--size, 7px);
+	height: var(--size, 7px);
+	left: 0;
+	top: 0;
+	transform: translate3d(var(--x, 0px), var(--y, 0px), 0) scale(0.25) rotate(var(--turn, 0deg));
+	opacity: 0;
+	clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
+	background: radial-gradient(circle at 40% 40%, rgb(255 255 255 / 0.95), var(--sparkle-color) 48%, transparent 82%);
+	filter:
+		drop-shadow(0 0 7px color-mix(in srgb, var(--sparkle-color) 80%, transparent))
+		drop-shadow(0 0 2px rgb(255 255 255 / 0.85));
+	animation: glitter-twinkle var(--life, 470ms) linear forwards;
+	will-change: transform, opacity;
+}
+
+.sparkle-particle::before,
+.sparkle-particle::after {
+	content: '';
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	background: linear-gradient(180deg, transparent, rgb(255 255 255 / 0.95), transparent);
+	opacity: 0.85;
+	border-radius: 9999px;
+}
+
+.sparkle-particle::before {
+	width: 1px;
+	height: calc(var(--size, 7px) * 1.7);
+}
+
+.sparkle-particle::after {
+	width: calc(var(--size, 7px) * 1.7);
+	height: 1px;
+}
+
+@keyframes glitter-twinkle {
+	0% {
+		opacity: 0;
+		transform: translate3d(var(--x, 0px), var(--y, 0px), 0) scale(0.2) rotate(var(--turn, 0deg));
+	}
+	25% {
+		opacity: 1;
+	}
+	45% {
+		opacity: 1;
+		transform: translate3d(
+			calc(var(--x, 0px) + (var(--dx, 0px) * 0.45)),
+			calc(var(--y, 0px) + (var(--dy, 0px) * 0.45)),
+			0
+		) scale(1.05) rotate(calc(var(--turn, 0deg) + 18deg));
+	}
+	62% {
+		opacity: 0.35;
+	}
+	78% {
+		opacity: 0.9;
+	}
+	100% {
+		opacity: 0;
+		transform: translate3d(calc(var(--x, 0px) + var(--dx, 0px)), calc(var(--y, 0px) + var(--dy, 0px)), 0)
+			scale(0.65) rotate(calc(var(--turn, 0deg) + 40deg));
+	}
+}
+
 
 /* ============================================================
    17. KEYFRAME ANIMATIONS
@@ -1024,6 +1103,10 @@ footer {
    animations, ensuring the site is accessible to everyone.
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
+	.sparkle-trail-layer {
+		display: none;
+	}
+
 	/* Stop the rotating SVG rings entirely */
 	.hero-accent {
 		animation: none;
