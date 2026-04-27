@@ -591,68 +591,75 @@ const experience = [
 		// These are the sections and cards we want to animate in.
 		// Use <HTMLElement> so TypeScript knows each item has .style.
 		const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const hasTouchLikePointer = window.matchMedia('(hover: none), (pointer: coarse)').matches;
 
 		// IntersectionObserver is a browser API that watches elements
 		// and fires a callback whenever they enter or leave the
 		// visible area of the page (the "viewport").
 		// This is much more performant than listening to the scroll
 		// event and checking element positions manually.
-		const observer = new IntersectionObserver(
-			(entries) => {
-				// entries is an array of all observed elements that
-				// have changed state since the last callback.
-				entries.forEach((entry) => {
-					// entry.isIntersecting is true when at least
-					// `threshold` (18%) of the element is visible.
-					if (entry.isIntersecting) {
-						// Add the CSS class that triggers the animation.
-						// See [data-reveal].is-visible in global.css —
-						// it sets opacity: 1 and transform: none.
-						entry.target.classList.add('is-visible');
+		if (reduceMotion || hasTouchLikePointer) {
+			// On touch/coarse pointers, ensure content is visible immediately.
+			revealItems.forEach((item) => {
+				item.classList.add('is-visible');
+				item.style.removeProperty('transition-delay');
+			});
+		} else {
+			const observer = new IntersectionObserver(
+				(entries) => {
+					// entries is an array of all observed elements that
+					// have changed state since the last callback.
+					entries.forEach((entry) => {
+						// entry.isIntersecting is true when at least
+						// `threshold` (18%) of the element is visible.
+						if (entry.isIntersecting) {
+							// Add the CSS class that triggers the animation.
+							// See [data-reveal].is-visible in global.css —
+							// it sets opacity: 1 and transform: none.
+							entry.target.classList.add('is-visible');
 
-						// Stop watching this element after it has
-						// animated in — we only want the effect once,
-						// not every time the user scrolls past it.
-						observer.unobserve(entry.target);
-					}
-				});
-			},
-			{
-				// threshold: 0.18 means the callback fires when 18%
-				// of the element is visible — triggers a little early
-				// so the animation starts before the element is fully on screen.
-				threshold: 0.18,
-				// rootMargin shrinks the detection zone by 30px at the
-				// bottom, so elements near the bottom of the viewport
-				// trigger slightly before reaching the very edge.
-				rootMargin: '0px 0px -30px 0px'
-			}
-		);
+							// Stop watching this element after it has
+							// animated in — we only want the effect once,
+							// not every time the user scrolls past it.
+							observer.unobserve(entry.target);
+						}
+					});
+				},
+				{
+					// threshold: 0.18 means the callback fires when 18%
+					// of the element is visible — triggers a little early
+					// so the animation starts before the element is fully on screen.
+					threshold: 0.18,
+					// rootMargin shrinks the detection zone by 30px at the
+					// bottom, so elements near the bottom of the viewport
+					// trigger slightly before reaching the very edge.
+					rootMargin: '0px 0px -30px 0px'
+				}
+			);
 
-		// Loop over every reveal item and begin observing it.
-		revealItems.forEach((item) => {
-			// Check for an optional delay. data-delay attribute is set
-			// on the hero card (120ms) and --delay CSS variable is set
-			// on each skill chip to create the cascading fan-in effect.
-			const dataDelay = item.getAttribute('data-delay');
-			const cssDelay = item.style.getPropertyValue('--delay');
-			const delay = dataDelay || cssDelay;
+			// Loop over every reveal item and begin observing it.
+			revealItems.forEach((item) => {
+				// Check for an optional delay. data-delay attribute is set
+				// on the hero card (120ms) and --delay CSS variable is set
+				// on each skill chip to create the cascading fan-in effect.
+				const dataDelay = item.getAttribute('data-delay');
+				const cssDelay = item.style.getPropertyValue('--delay');
+				const delay = dataDelay || cssDelay;
 
-			// Apply the delay as a CSS transition-delay so the
-			// element waits before its animation starts.
-			if (delay) {
-				item.style.transitionDelay = delay;
-			}
+				// Apply the delay as a CSS transition-delay so the
+				// element waits before its animation starts.
+				if (delay) {
+					item.style.transitionDelay = delay;
+				}
 
-			// Start watching this element with the observer above.
-			observer.observe(item);
-		});
+				// Start watching this element with the observer above.
+				observer.observe(item);
+			});
+		}
 
 		// Mouse sparkle trail using the existing CSS palette tokens.
-		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
-
-		if (!reduceMotion && supportsFinePointer) {
+		if (!reduceMotion) {
 			const sparkleLayer = document.createElement('div');
 			sparkleLayer.className = 'sparkle-trail-layer';
 			sparkleLayer.setAttribute('aria-hidden', 'true');
@@ -681,11 +688,13 @@ const experience = [
 
 			let lastSpawn = 0;
 			const minInterval = 16;
+			let touchActive = false;
+			let touchFallbackActive = false;
 
-			// Track the last known mouse position so scroll can reuse it
-			let mouseX = -999;
-			let mouseY = -999;
-			let hasMousePos = false;
+			// Track the last known pointer position so scroll can reuse it.
+			let pointerX = -999;
+			let pointerY = -999;
+			let hasPointerPos = false;
 
 			const spawnSparkle = (x: number, y: number) => {
 				const sparkle = document.createElement('span');
@@ -715,25 +724,111 @@ const experience = [
 				sparkleLayer.appendChild(sparkle);
 			};
 
+			const emitTrail = (x: number, y: number, isTouch = false) => {
+				pointerX = x;
+				pointerY = y;
+				hasPointerPos = true;
+
+				const now = performance.now();
+				const interval = isTouch ? 28 : minInterval;
+				if (now - lastSpawn < interval) return;
+				lastSpawn = now;
+
+				spawnSparkle(x, y);
+				if (Math.random() > 0.35) {
+					spawnSparkle(x + (Math.random() - 0.5) * 12, y + (Math.random() - 0.5) * 8);
+				}
+				if (!isTouch && Math.random() > 0.75) {
+					spawnSparkle(x + (Math.random() - 0.5) * 18, y + (Math.random() - 0.5) * 10);
+				}
+			};
+
+			window.addEventListener(
+				'pointerdown',
+				(event) => {
+					if (event.pointerType === 'touch' && touchFallbackActive) return;
+
+					if (event.pointerType === 'touch') {
+						touchActive = true;
+					}
+
+					spawnSparkle(event.clientX, event.clientY);
+				},
+				{ passive: true }
+			);
+
 			window.addEventListener(
 				'pointermove',
 				(event) => {
-					if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+					const isTouchPointer = event.pointerType === 'touch';
+					if (isTouchPointer && touchFallbackActive) return;
+					if (isTouchPointer && !touchActive) return;
 
-					mouseX = event.clientX;
-					mouseY = event.clientY;
-					hasMousePos = true;
+					emitTrail(event.clientX, event.clientY, isTouchPointer);
+				},
+				{ passive: true }
+			);
 
-					const now = performance.now();
-					if (now - lastSpawn < minInterval) return;
-					lastSpawn = now;
+			window.addEventListener(
+				'touchstart',
+				(event) => {
+					const touch = event.touches[0];
+					if (!touch) return;
 
-					spawnSparkle(event.clientX, event.clientY);
-					if (Math.random() > 0.35) {
-						spawnSparkle(event.clientX + (Math.random() - 0.5) * 12, event.clientY + (Math.random() - 0.5) * 8);
+					touchFallbackActive = true;
+					touchActive = true;
+
+					emitTrail(touch.clientX, touch.clientY, true);
+				},
+				{ passive: true }
+			);
+
+			window.addEventListener(
+				'touchmove',
+				(event) => {
+					const touch = event.touches[0];
+					if (!touch) return;
+
+					touchFallbackActive = true;
+					touchActive = true;
+					emitTrail(touch.clientX, touch.clientY, true);
+				},
+				{ passive: true }
+			);
+
+			window.addEventListener(
+				'touchend',
+				() => {
+					touchActive = false;
+					touchFallbackActive = false;
+				},
+				{ passive: true }
+			);
+
+			window.addEventListener(
+				'touchcancel',
+				() => {
+					touchActive = false;
+					touchFallbackActive = false;
+				},
+				{ passive: true }
+			);
+
+			window.addEventListener(
+				'pointerup',
+				(event) => {
+					if (event.pointerType === 'touch') {
+						touchActive = false;
 					}
-					if (Math.random() > 0.75) {
-						spawnSparkle(event.clientX + (Math.random() - 0.5) * 18, event.clientY + (Math.random() - 0.5) * 10);
+				},
+				{ passive: true }
+			);
+
+			window.addEventListener(
+				'pointercancel',
+				(event) => {
+					if (event.pointerType === 'touch') {
+						touchActive = false;
 					}
 				},
 				{ passive: true }
@@ -744,7 +839,7 @@ const experience = [
 			window.addEventListener(
 				'scroll',
 				() => {
-					if (!hasMousePos) return;
+					if (!hasPointerPos) return;
 
 					const now = performance.now();
 					const currentScrollY = window.scrollY;
@@ -760,11 +855,11 @@ const experience = [
 						if (now - lastSpawn < minInterval / 2) break;
 						lastSpawn = now;
 						const t = steps > 1 ? i / (steps - 1) : 0;
-						const spawnY = mouseY + deltaY * t;
-						spawnSparkle(mouseX, spawnY);
+						const spawnY = pointerY + deltaY * t;
+						spawnSparkle(pointerX, spawnY);
 						if (Math.random() > 0.45) {
 							spawnSparkle(
-								mouseX + (Math.random() - 0.5) * 12,
+								pointerX + (Math.random() - 0.5) * 12,
 								spawnY + (Math.random() - 0.5) * 6
 							);
 						}
