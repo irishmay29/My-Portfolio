@@ -352,6 +352,105 @@ body {
 		0 16px 45px rgb(2 2 2 / 0.6);
 }
 
+.hero-model-stage {
+	width: min(980px, 100%);
+	margin: 0 auto 1.4rem;
+}
+
+.hero-model-surface {
+	position: relative;
+	overflow: visible;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	padding: 0;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+	box-shadow: none;
+}
+
+.hero-model-viewer {
+	display: block;
+	width: 100%;
+	height: clamp(360px, 52vw, 760px);
+	background: transparent;
+	--poster-color: transparent;
+	filter: drop-shadow(0 28px 38px rgb(2 2 2 / 0.34));
+}
+
+.hero-model-turntable {
+	position: relative;
+	width: 100%;
+	transform-style: preserve-3d;
+	transform: rotateX(5deg) rotateY(-16deg);
+	animation: hero-turntable 7.2s ease-in-out infinite alternate;
+	will-change: transform;
+}
+
+.hero-model-surface.is-interacting .hero-model-turntable {
+	animation-play-state: paused;
+}
+
+.hero-model {
+	position: relative;
+	width: 100%;
+	transform-style: preserve-3d;
+	transform: translate3d(var(--shift-x, 0px), var(--shift-y, 0px), 0)
+		rotateX(var(--tilt-x, 0deg))
+		rotateY(var(--tilt-y, 0deg));
+	transition: transform 80ms linear;
+	will-change: transform;
+}
+
+.hero-model-svg {
+	display: block;
+	width: 100%;
+	height: auto;
+	color: rgb(167 187 236 / 0.74);
+	filter: drop-shadow(0 10px 20px rgb(2 2 2 / 0.45));
+}
+
+.hero-model-back,
+.hero-model-mid,
+.hero-model-front {
+	transform-box: fill-box;
+	transform-origin: center;
+	transition: transform 120ms ease-out;
+}
+
+.hero-model-back {
+	transform: translateZ(8px);
+}
+
+.hero-model-mid {
+	transform: translateZ(24px);
+}
+
+.hero-model-front {
+	transform: translateZ(40px);
+}
+
+.hero-model-surface:hover .hero-model-back {
+	transform: translateZ(12px) translateX(calc(var(--shift-x, 0px) * -0.22));
+}
+
+.hero-model-surface:hover .hero-model-mid {
+	transform: translateZ(30px) translateX(calc(var(--shift-x, 0px) * 0.14));
+}
+
+.hero-model-surface:hover .hero-model-front {
+	transform: translateZ(48px) translateX(calc(var(--shift-x, 0px) * 0.24));
+}
+
+@keyframes hero-turntable {
+	0% {
+		transform: rotateX(6deg) rotateY(-24deg) rotateZ(-1deg);
+	}
+	100% {
+		transform: rotateX(4deg) rotateY(20deg) rotateZ(1deg);
+	}
+}
+
 /* Stat row inside the hero card (e.g. "1 launched client project").
    Uses flexbox to line up the number and the label side-by-side.
    align-items: baseline aligns text along the bottom of each word,
@@ -1087,6 +1186,22 @@ footer {
 		height: 140px;
 	}
 
+	.hero-model-surface {
+		padding: 0.5rem;
+	}
+
+	.hero-model-viewer {
+		height: clamp(280px, 72vw, 440px);
+	}
+
+	.hero-model-stage {
+		margin-bottom: 1.15rem;
+	}
+
+	.hero-model-turntable {
+		transform: rotateX(4deg) rotateY(-12deg);
+	}
+
 	/* Reduce vertical spacing between sections on mobile */
 	.section {
 		margin-top: 4.5rem;
@@ -1110,6 +1225,23 @@ footer {
 	/* Stop the rotating SVG rings entirely */
 	.hero-accent {
 		animation: none;
+	}
+
+	.hero-model {
+		transform: none;
+		transition: none;
+	}
+
+	.hero-model-turntable {
+		animation: none;
+		transform: none;
+	}
+
+	.hero-model-back,
+	.hero-model-mid,
+	.hero-model-front {
+		transition: none;
+		transform: none;
 	}
 
 	/* Disable fluid background animations */

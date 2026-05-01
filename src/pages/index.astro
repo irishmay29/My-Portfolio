@@ -11,6 +11,7 @@
 // Import the Layout component that wraps the page with the
 // full <html>, <head>, and <body> structure (see layouts/Layout.astro).
 import Layout from '../layouts/Layout.astro';
+import gtrBlueModel from '../assets/GTR_BLUE/source/Norka Varis R35.glb?url';
 
 // -------------------------------------------------------
 // SKILLS LIST
@@ -277,6 +278,34 @@ const experience = [
 	     Same centered max-width as the navbar for alignment. */}
 	<main id="home" class="mx-auto w-[min(1100px,92%)] py-16 md:py-24">
 
+		{/* ── TOP 3D MODEL ─────────────────────────────────────────
+		     Standalone model element placed above the hero grid. */}
+		<div class="hero-model-stage" data-reveal data-delay="80">
+			<div class="hero-model-surface">
+				<model-viewer
+					id="hero-car-model"
+					class="hero-model-viewer"
+					src={gtrBlueModel}
+					alt="Blue Nissan GT-R 3D model"
+					camera-orbit="-90deg 78deg 72%"
+					camera-target="0m 0.55m 0m"
+					field-of-view="26deg"
+					auto-rotate
+					auto-rotate-delay="0"
+					rotation-per-second="14deg"
+					camera-controls
+					disable-pan
+					disable-zoom
+					shadow-intensity="1"
+					shadow-softness="0.8"
+					exposure="1.05"
+					environment-image="neutral"
+					interaction-prompt="none"
+					touch-action="pan-y"
+				></model-viewer>
+			</div>
+		</div>
+
 		{/* ── HERO SECTION ──────────────────────────────────────────
 		     The very first thing visitors see.
 		     On desktop: two-column grid — 1.2fr text | 0.8fr card.
@@ -314,9 +343,6 @@ const experience = [
 			     starting its reveal animation — so it fades in just
 			     after the left column, creating a staggered effect. */}
 			<div class="hero-card" data-reveal data-delay="120">
-				{/* Decorative SVG: two rotating rings + crosshair lines.
-				     aria-hidden="true" hides it from screen readers because
-				     it is purely decorative — not meaningful content. */}
 				<svg class="hero-accent" viewBox="0 0 220 220" fill="none" aria-hidden="true">
 					<circle cx="110" cy="110" r="80" stroke="currentColor" stroke-width="1.5"></circle>
 					<circle cx="110" cy="110" r="52" stroke="currentColor" stroke-width="1.5"></circle>
@@ -580,6 +606,8 @@ const experience = [
 		<p>2026 Irish Delos Santos.</p>
 	</footer>
 
+	<script type="module" src="https://unpkg.com/@google/model-viewer@4.0.0/dist/model-viewer.min.js"></script>
+
 	{/* ── SCROLL REVEAL SCRIPT ─────────────────────────────────────
 	     This client-side JavaScript runs in the BROWSER (not at
 	     build time). It makes elements fade and slide into view
@@ -658,6 +686,96 @@ const experience = [
 			});
 		}
 
+		// Recolor the GLB car paint to better match the site palette.
+		const heroCarModel = document.querySelector<HTMLElement & {
+			autoRotate?: boolean;
+			cameraOrbit?: string;
+			jumpCameraToGoal?: () => void;
+			model?: {
+				materials?: Array<{
+					name?: string;
+					pbrMetallicRoughness?: {
+						getBaseColorFactor?: () => [number, number, number, number];
+						setBaseColorFactor?: (value: [number, number, number, number]) => void;
+					};
+				}>;
+			};
+		}>('#hero-car-model');
+
+		if (heroCarModel) {
+			const frontCameraOrbit = '-90deg 78deg 72%';
+			const palettePaint: [number, number, number, number] = [0.365, 0.388, 0.545, 1];
+			const paletteHighlight: [number, number, number, number] = [0.314, 0.337, 0.471, 1];
+			const exactPaintMaterials = new Set([
+				'ext_body',
+				'painted_metal_smooth_930000FF',
+				'INT_Cockpit_OCC_Carpaint'
+			]);
+			const materialNameHint = /(paint|body|carpaint|ext_body|coat|vehicle)/i;
+
+			const applyPaletteToCar = () => {
+				const materials = heroCarModel.model?.materials || [];
+				if (!materials.length) return;
+
+				let recoloredCount = 0;
+
+				materials.forEach((material) => {
+					const pbr = material.pbrMetallicRoughness;
+					if (!pbr?.setBaseColorFactor) return;
+
+					const baseColor = pbr.getBaseColorFactor?.();
+					const materialName = material.name || '';
+					const isExactPaintMaterial = exactPaintMaterials.has(materialName);
+					const nameLooksRelevant = isExactPaintMaterial || materialNameHint.test(materialName);
+					const isBlueDominant = baseColor
+						? baseColor[2] > baseColor[0] * 1.12 && baseColor[2] > baseColor[1] * 1.05
+						: false;
+
+					if (!nameLooksRelevant && !isBlueDominant) return;
+
+					const nextColor = recoloredCount === 0 || isExactPaintMaterial ? palettePaint : paletteHighlight;
+					pbr.setBaseColorFactor(nextColor);
+					recoloredCount += 1;
+				});
+
+				// Fallback: if no likely paint material was found, tint the first
+				// non-dark material so the car still visually fits the palette.
+				if (recoloredCount === 0) {
+					for (const material of materials) {
+						const pbr = material.pbrMetallicRoughness;
+						const baseColor = pbr?.getBaseColorFactor?.();
+						if (!pbr?.setBaseColorFactor || !baseColor) continue;
+						const average = (baseColor[0] + baseColor[1] + baseColor[2]) / 3;
+						if (average < 0.12) continue;
+						pbr.setBaseColorFactor(palettePaint);
+						break;
+					}
+				}
+			};
+
+			const resumeFrontRotation = () => {
+				heroCarModel.autoRotate = false;
+				heroCarModel.cameraOrbit = frontCameraOrbit;
+				heroCarModel.jumpCameraToGoal?.();
+
+				window.setTimeout(() => {
+					heroCarModel.autoRotate = true;
+				}, 160);
+			};
+
+			heroCarModel.addEventListener(
+				'pointerenter',
+				() => {
+					heroCarModel.autoRotate = false;
+				},
+				{ passive: true }
+			);
+
+			heroCarModel.addEventListener('pointerleave', resumeFrontRotation, { passive: true });
+			heroCarModel.addEventListener('pointercancel', resumeFrontRotation, { passive: true });
+			heroCarModel.addEventListener('load', applyPaletteToCar, { once: true });
+		}
+
 		// Mouse sparkle trail using the existing CSS palette tokens.
 		if (!reduceMotion) {
 			const sparkleLayer = document.createElement('div');
@@ -690,6 +808,7 @@ const experience = [
 			const minInterval = 16;
 			let touchActive = false;
 			let touchFallbackActive = false;
+			let lastInteractionType: 'touch' | 'non-touch' | null = null;
 
 			// Track the last known pointer position so scroll can reuse it.
 			let pointerX = -999;
@@ -728,6 +847,7 @@ const experience = [
 				pointerX = x;
 				pointerY = y;
 				hasPointerPos = true;
+				lastInteractionType = isTouch ? 'touch' : 'non-touch';
 
 				const now = performance.now();
 				const interval = isTouch ? 28 : minInterval;
@@ -777,6 +897,7 @@ const experience = [
 
 					touchFallbackActive = true;
 					touchActive = true;
+					lastInteractionType = 'touch';
 
 					emitTrail(touch.clientX, touch.clientY, true);
 				},
@@ -791,6 +912,7 @@ const experience = [
 
 					touchFallbackActive = true;
 					touchActive = true;
+					lastInteractionType = 'touch';
 					emitTrail(touch.clientX, touch.clientY, true);
 				},
 				{ passive: true }
@@ -836,34 +958,42 @@ const experience = [
 
 			// Fire sparkles along the scroll direction from the cursor
 			let prevScrollY = window.scrollY;
+			const minScrollSparkleInterval = 44;
 			window.addEventListener(
 				'scroll',
 				() => {
 					if (!hasPointerPos) return;
 
 					const now = performance.now();
+
+					// Prevent momentum-scroll sparkles after finger release.
+					// Desktop/pen can keep trailing from the current pointer anchor.
+					if (lastInteractionType === 'touch' && !touchActive) return;
+
 					const currentScrollY = window.scrollY;
 					// positive = scrolled up, negative = scrolled down
 					const deltaY = prevScrollY - currentScrollY;
 					prevScrollY = currentScrollY;
 
 					if (deltaY === 0) return;
+					if (Math.abs(deltaY) < 4) return;
+					if (now - lastSpawn < minScrollSparkleInterval) return;
 
-					// Distribute sparkles along the scroll path
-					const steps = Math.min(Math.ceil(Math.abs(deltaY) / 6), 8);
+					// Distribute a lighter sparkle trail along the scroll path
+					const steps = Math.min(Math.ceil(Math.abs(deltaY) / 24), 2);
 					for (let i = 0; i < steps; i++) {
-						if (now - lastSpawn < minInterval / 2) break;
-						lastSpawn = now;
 						const t = steps > 1 ? i / (steps - 1) : 0;
 						const spawnY = pointerY + deltaY * t;
 						spawnSparkle(pointerX, spawnY);
-						if (Math.random() > 0.45) {
+						if (Math.random() > 0.96) {
 							spawnSparkle(
 								pointerX + (Math.random() - 0.5) * 12,
 								spawnY + (Math.random() - 0.5) * 6
 							);
 						}
 					}
+
+					lastSpawn = now;
 				},
 				{ passive: true }
 			);
