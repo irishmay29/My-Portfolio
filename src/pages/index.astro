@@ -704,14 +704,30 @@ const experience = [
 
 		if (heroCarModel) {
 			const frontCameraOrbit = '-90deg 78deg 72%';
+			let resumeRotationTimeout: number | undefined;
 			const palettePaint: [number, number, number, number] = [0.365, 0.388, 0.545, 1];
 			const paletteHighlight: [number, number, number, number] = [0.314, 0.337, 0.471, 1];
+			const interiorBlack: [number, number, number, number] = [0.04, 0.04, 0.04, 1];
+			const carbonBlack: [number, number, number, number] = [0.03, 0.03, 0.035, 1];
 			const exactPaintMaterials = new Set([
 				'ext_body',
-				'painted_metal_smooth_930000FF',
-				'INT_Cockpit_OCC_Carpaint'
+				'painted_metal_smooth_930000FF'
+			]);
+			const exactInteriorMaterials = new Set(['INT_Cockpit_OCC_Carpaint']);
+			const exactCarbonExteriorMaterials = new Set([
+				'ext_carbon',
+				'ext_chrome',
+				'chrome_8C8D8DFF',
+				'EXT_Details',
+				'ext_grill',
+				'region_plates',
+				'hood_undertext'
 			]);
 			const materialNameHint = /(paint|body|carpaint|ext_body|coat|vehicle)/i;
+			const interiorNameHint = /(int_|interior|cockpit|seat|dashboard|dash|upholstery|cabin|door[_ ]?panel)/i;
+			const exteriorNameHint = /(ext_|exterior|body|bumper|hood|fender|door|spoiler|mirror|carpaint|paint|grille)/i;
+			const carbonPartsHint = /(side[_ ]?skirt|sideskirt|skirt|spoiler|wing)/i;
+			const carbonExteriorHint = /(ext_(carbon|chrome|grill)|chrome|grille|plate|hood_undertext|details)/i;
 
 			const applyPaletteToCar = () => {
 				const materials = heroCarModel.model?.materials || [];
@@ -725,6 +741,38 @@ const experience = [
 
 					const baseColor = pbr.getBaseColorFactor?.();
 					const materialName = material.name || '';
+					const isExactInteriorMaterial = exactInteriorMaterials.has(materialName);
+					const looksLikeInterior = isExactInteriorMaterial || interiorNameHint.test(materialName);
+
+					if (looksLikeInterior) {
+						pbr.setBaseColorFactor(interiorBlack);
+						return;
+					}
+
+					const forceCarbonParts = carbonPartsHint.test(materialName);
+					if (forceCarbonParts) {
+						pbr.setBaseColorFactor(carbonBlack);
+						return;
+					}
+
+					const forceCarbonExterior =
+						exactCarbonExteriorMaterials.has(materialName) || carbonExteriorHint.test(materialName);
+					if (forceCarbonExterior) {
+						pbr.setBaseColorFactor(carbonBlack);
+						return;
+					}
+
+					const looksLikeExterior = exactPaintMaterials.has(materialName) || exteriorNameHint.test(materialName);
+					const isWhiteExterior = baseColor
+						? Math.min(baseColor[0], baseColor[1], baseColor[2]) >= 0.72 &&
+								Math.max(baseColor[0], baseColor[1], baseColor[2]) - Math.min(baseColor[0], baseColor[1], baseColor[2]) <= 0.12
+						: false;
+
+					if (looksLikeExterior && isWhiteExterior) {
+						pbr.setBaseColorFactor(carbonBlack);
+						return;
+					}
+
 					const isExactPaintMaterial = exactPaintMaterials.has(materialName);
 					const nameLooksRelevant = isExactPaintMaterial || materialNameHint.test(materialName);
 					const isBlueDominant = baseColor
@@ -754,18 +802,26 @@ const experience = [
 			};
 
 			const resumeFrontRotation = () => {
+				if (resumeRotationTimeout !== undefined) {
+					window.clearTimeout(resumeRotationTimeout);
+				}
+
 				heroCarModel.autoRotate = false;
 				heroCarModel.cameraOrbit = frontCameraOrbit;
-				heroCarModel.jumpCameraToGoal?.();
 
-				window.setTimeout(() => {
+				// Let model-viewer's camera interpolation ease into the front view,
+				// then re-enable auto-rotate for a smoother handoff.
+				resumeRotationTimeout = window.setTimeout(() => {
 					heroCarModel.autoRotate = true;
-				}, 160);
+				}, 1200);
 			};
 
 			heroCarModel.addEventListener(
 				'pointerenter',
 				() => {
+					if (resumeRotationTimeout !== undefined) {
+						window.clearTimeout(resumeRotationTimeout);
+					}
 					heroCarModel.autoRotate = false;
 				},
 				{ passive: true }
