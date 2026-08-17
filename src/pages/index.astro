@@ -11,7 +11,8 @@
 // Import the Layout component that wraps the page with the
 // full <html>, <head>, and <body> structure (see layouts/Layout.astro).
 import Layout from '../layouts/Layout.astro';
-import gtrBlueModel from '../assets/GTR_BLUE/source/Norka Varis R35.glb?url';
+// GTR car model temporarily disabled — see hero-model-stage below.
+// import gtrBlueModel from '../assets/GTR_BLUE/source/Norka Varis R35.glb?url';
 
 // -------------------------------------------------------
 // SKILLS LIST
@@ -43,8 +44,7 @@ const skills = [
 	'Google Workspace',
 	'VS Code',
 	'Slacks',
-	'Salesforce',
-	'GoldMine'
+	'Salesforce'
 
 ];
 
@@ -278,8 +278,9 @@ const experience = [
 	     Same centered max-width as the navbar for alignment. */}
 	<main id="home" class="mx-auto w-[min(1100px,92%)] py-16 md:py-24">
 
-		{/* ── TOP 3D MODEL ─────────────────────────────────────────
-		     Standalone model element placed above the hero grid. */}
+		{/* ── TOP 3D MODEL (disabled) ──────────────────────────────
+		     GTR car model turned off for now — wheels can't rotate
+		     with this GLB (no separate wheel nodes/animations).
 		<div class="hero-model-stage" data-reveal data-delay="80">
 			<div class="hero-model-surface">
 				<model-viewer
@@ -290,9 +291,6 @@ const experience = [
 					camera-orbit="-90deg 78deg 72%"
 					camera-target="0m 0.55m 0m"
 					field-of-view="26deg"
-					auto-rotate
-					auto-rotate-delay="0"
-					rotation-per-second="14deg"
 					camera-controls
 					disable-pan
 					disable-zoom
@@ -305,6 +303,7 @@ const experience = [
 				></model-viewer>
 			</div>
 		</div>
+		*/}
 
 		{/* ── HERO SECTION ──────────────────────────────────────────
 		     The very first thing visitors see.
@@ -354,7 +353,16 @@ const experience = [
 					Building fast, Lighthouse‑friendly interfaces that stay true to their own style and personality.
 				</p>
 				<div class="mt-8 grid gap-3 text-sm">
-					<div class="metric"><span>1</span> launched client project</div>
+					{/* Shows an arrow by default; hovering anywhere on the
+					     card swaps it for the "1 launched client project" text. */}
+					<div class="metric">
+						<span class="metric-arrow" aria-hidden="true">
+							<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M5 12h14M13 6l6 6-6 6" />
+							</svg>
+						</span>
+						<span class="metric-text"><span class="metric-number">1</span> launched client project</span>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -520,7 +528,8 @@ const experience = [
 
 		{/* ── EXPERIENCE / TIMELINE SECTION ──────────────────────────
 		     Renders work history entries from the experience[] array
-		     as a left-bordered vertical timeline. */}
+		     as a left-bordered vertical timeline. Each role is a
+		     clickable card — hover or click to expand the details. */}
 		<section class="section" data-reveal>
 			<div class="section-head">
 				<p class="eyebrow">Experience</p>
@@ -530,11 +539,23 @@ const experience = [
 				{
 					experience.map((item) => (
 						<article class="timeline-item">
-							<p>{item.period}</p>   {/* e.g. "2024 - Present" */}
-							<h3>{item.role}</h3>   {/* e.g. "Freelance Web Developer" */}
-							<ul class="mt-3 list-disc space-y-1 pl-5 text-paper/75">
-								{item.details.map((detail) => <li>{detail}</li>)}
-							</ul>
+							<button type="button" class="timeline-toggle" aria-expanded="false">
+								<span class="timeline-toggle-text">
+									<span class="timeline-period">{item.period}</span>
+									<h3 class="timeline-role">{item.role}</h3>
+								</span>
+								{/* Chevron flips 180° when expanded — signals "click to expand". */}
+								<svg class="timeline-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+									<path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+							</button>
+							<div class="timeline-details">
+								<div class="timeline-details-inner">
+									<ul class="list-disc space-y-1 text-paper/75">
+										{item.details.map((detail) => <li>{detail}</li>)}
+									</ul>
+								</div>
+							</div>
 						</article>
 					))
 				}
@@ -583,14 +604,14 @@ const experience = [
 				<button type="submit" class="btn-primary">Send Message</button>
 				<p class="form-status" aria-live="polite"></p>
 			</form>
-			<div class="mt-6 flex flex-wrap gap-4">
-				<a href="https://github.com/irishmay29" target="_blank" rel="noopener noreferrer" class="btn-ghost inline-flex items-center gap-2">
+			<div class="mt-6 flex flex-wrap justify-center gap-4">
+				<a href="https://github.com/irishmay29" target="_blank" rel="noopener noreferrer" class="btn-ghost inline-flex items-center gap-2 social-link social-link--github">
 					<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 						<path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
 					</svg>
 					GitHub
 				</a>
-				<a href="https://www.linkedin.com/in/irish-delos-santos-344624224/" target="_blank" rel="noopener noreferrer" class="btn-ghost inline-flex items-center gap-2">
+				<a href="https://www.linkedin.com/in/irish-delos-santos-344624224/" target="_blank" rel="noopener noreferrer" class="btn-ghost inline-flex items-center gap-2 social-link social-link--linkedin">
 					<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
 						<path d="M20.447 20.452h-3.554v-5.569c0-1.328-.475-2.236-1.667-2.236-1.205 0-1.923.81-2.237 1.591-.115.282-.144.676-.144 1.071v5.143h-3.554s.047-8.349 0-9.207h3.554v1.303c.405-.624 1.13-1.513 2.753-1.513 2.011 0 3.519 1.314 3.849 4.019l.001.06v5.338zM5.337 5.433c-1.217 0-2.021-.809-2.021-1.823 0-1.035.796-1.823 2.066-1.823 1.271 0 2.021.788 2.041 1.823 0 1.014-.77 1.823-2.066 1.823zm-1.946 15.019h3.89V11.248H3.391v9.204zM22.224 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451c.979 0 1.778-.773 1.778-1.729V1.729C23.999.774 23.203 0 22.224 0"/>
 					</svg>
@@ -686,9 +707,21 @@ const experience = [
 			});
 		}
 
-		// Recolor the GLB car paint to better match the site palette.
+		// Experience timeline: clicking a role toggles its details open/closed
+		// (hover also previews it open via CSS — see .timeline-item:hover).
+		document.querySelectorAll<HTMLButtonElement>('.timeline-toggle').forEach((toggle) => {
+			toggle.addEventListener('click', () => {
+				const item = toggle.closest<HTMLElement>('.timeline-item');
+				if (!item) return;
+
+				const isOpen = item.classList.toggle('is-open');
+				toggle.setAttribute('aria-expanded', String(isOpen));
+			});
+		});
+
+		// GTR car model disabled for now — recolor/camera/drive logic commented out below.
+		/*
 		const heroCarModel = document.querySelector<HTMLElement & {
-			autoRotate?: boolean;
 			cameraOrbit?: string;
 			jumpCameraToGoal?: () => void;
 			model?: {
@@ -704,7 +737,6 @@ const experience = [
 
 		if (heroCarModel) {
 			const frontCameraOrbit = '-90deg 78deg 72%';
-			let resumeRotationTimeout: number | undefined;
 			const palettePaint: [number, number, number, number] = [0.365, 0.388, 0.545, 1];
 			const paletteHighlight: [number, number, number, number] = [0.314, 0.337, 0.471, 1];
 			const interiorBlack: [number, number, number, number] = [0.04, 0.04, 0.04, 1];
@@ -801,36 +833,54 @@ const experience = [
 				}
 			};
 
-			const resumeFrontRotation = () => {
-				if (resumeRotationTimeout !== undefined) {
-					window.clearTimeout(resumeRotationTimeout);
-				}
-
-				heroCarModel.autoRotate = false;
+			// Snap the camera back to the fixed front view after the user
+			// drags it around, so it never drifts into a spinning state.
+			const resetCameraOrbit = () => {
 				heroCarModel.cameraOrbit = frontCameraOrbit;
-
-				// Let model-viewer's camera interpolation ease into the front view,
-				// then re-enable auto-rotate for a smoother handoff.
-				resumeRotationTimeout = window.setTimeout(() => {
-					heroCarModel.autoRotate = true;
-				}, 1200);
 			};
 
-			heroCarModel.addEventListener(
-				'pointerenter',
-				() => {
-					if (resumeRotationTimeout !== undefined) {
-						window.clearTimeout(resumeRotationTimeout);
-					}
-					heroCarModel.autoRotate = false;
-				},
-				{ passive: true }
-			);
-
-			heroCarModel.addEventListener('pointerleave', resumeFrontRotation, { passive: true });
-			heroCarModel.addEventListener('pointercancel', resumeFrontRotation, { passive: true });
+			heroCarModel.addEventListener('pointerleave', resetCameraOrbit, { passive: true });
+			heroCarModel.addEventListener('pointercancel', resetCameraOrbit, { passive: true });
 			heroCarModel.addEventListener('load', applyPaletteToCar, { once: true });
+
+			// Drive the car across the screen as the user scrolls, like it's
+			// passing by in front of them, instead of just spinning in place.
+			const heroModelSurface = document.querySelector<HTMLElement>('.hero-model-surface');
+			const heroModelStage = document.querySelector<HTMLElement>('.hero-model-stage');
+
+			if (heroModelSurface && heroModelStage && !reduceMotion) {
+				const driveDistance = Math.max(window.innerHeight * 0.9, 480);
+				let scrollTicking = false;
+
+				const updateDrivePosition = () => {
+					scrollTicking = false;
+					const rect = heroModelStage.getBoundingClientRect();
+					// 0 = at rest (top of page, hidden off-screen left), 1 = fully driven past off-screen right.
+					const progress = Math.min(Math.max(-rect.top / driveDistance, 0), 1);
+
+					const driveX = -170 + progress * 340; // enters from the left, exits past the right
+					const lift = Math.sin(progress * Math.PI) * -14; // small bounce mid-pass
+					const lean = (progress - 0.5) * -6; // slight lean into the direction of travel
+
+					heroModelSurface.style.setProperty('--drive-x', `${driveX}%`);
+					heroModelSurface.style.setProperty('--drive-y', `${lift}px`);
+					heroModelSurface.style.setProperty('--drive-rotate', `${lean}deg`);
+				};
+
+				window.addEventListener(
+					'scroll',
+					() => {
+						if (scrollTicking) return;
+						scrollTicking = true;
+						window.requestAnimationFrame(updateDrivePosition);
+					},
+					{ passive: true }
+				);
+				window.addEventListener('resize', updateDrivePosition, { passive: true });
+				updateDrivePosition();
+			}
 		}
+		*/
 
 		// Mouse sparkle trail using the existing CSS palette tokens.
 		if (!reduceMotion) {

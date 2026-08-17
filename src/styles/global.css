@@ -310,6 +310,15 @@ body {
 	animation: rgb-glow-hover 3s linear infinite;
 }
 
+/* Social links: icon + label tinted to match each platform's brand color. */
+.social-link--github {
+	color: #f0f6fc;
+}
+
+.social-link--linkedin {
+	color: #0a66c2;
+}
+
 /* ============================================================
    8. TYPOGRAPHY HELPERS
    ============================================================ */
@@ -367,6 +376,9 @@ body {
 	backdrop-filter: none;
 	-webkit-backdrop-filter: none;
 	box-shadow: none;
+	/* Scroll-driven "driving past" motion — updated from JS as the page scrolls. */
+	transform: translate3d(var(--drive-x, 0%), var(--drive-y, 0px), 0) rotate(var(--drive-rotate, 0deg));
+	will-change: transform;
 }
 
 .hero-model-viewer {
@@ -451,20 +463,60 @@ body {
 	}
 }
 
-/* Stat row inside the hero card (e.g. "1 launched client project").
-   Uses flexbox to line up the number and the label side-by-side.
-   align-items: baseline aligns text along the bottom of each word,
-   so different font sizes sit on the same visual baseline. */
+/* Stat row inside the hero card. Shows only an arrow at rest;
+   hovering the card (.hero-card) cross-fades it into the full
+   "1 launched client project" text — both layers share one grid
+   cell so the swap doesn't shift the card's layout. */
 .metric {
+	position: relative;
+	display: grid;
+	min-height: 1.6rem;
+	color: rgb(167 187 236 / 0.83);
+}
+
+.metric-arrow,
+.metric-text {
+	grid-area: 1 / 1;
+	align-self: center;
+}
+
+.metric-arrow {
+	display: inline-flex;
+	width: 22px;
+	height: 22px;
+	color: var(--color-sky);
+	opacity: 1;
+	transform: translateX(0);
+	transition: opacity 320ms ease, transform 320ms ease;
+}
+
+.metric-arrow svg {
+	width: 100%;
+	height: 100%;
+}
+
+.metric-text {
 	display: flex;
 	align-items: baseline;
 	gap: 0.55rem;
-	color: rgb(167 187 236 / 0.83);
+	opacity: 0;
+	transform: translateX(-8px);
+	transition: opacity 320ms ease 60ms, transform 320ms ease 60ms;
+}
+
+.hero-card:hover .metric-arrow {
+	opacity: 0;
+	transform: translateX(10px);
+}
+
+.hero-card:hover .metric-text {
+	opacity: 1;
+	transform: translateX(0);
 }
 
 /* The numeric value inside a metric row (the "1" in "1 project").
    Larger and brighter than surrounding text to draw the eye. */
-.metric span {
+.metric-number {
 	font-family: var(--font-mono);
 	font-size: 1.15rem;
 	color: #d3ddf7;
@@ -647,13 +699,54 @@ body {
    12. SKILLS — .chip
    Each skill is displayed as a soft rounded rectangular badge
    in a responsive grid (2 columns tablet, 4 columns desktop).
+   On hover, a soft rainbow sweeps across the chip left-to-right
+   (::before layer), blended subtly so the label stays readable.
    ============================================================ */
 .chip {
+	position: relative;
+	isolation: isolate;
+	overflow: hidden;
 	border: 1px solid rgb(167 187 236 / 0.2);
 	border-radius: 0.8rem;     /* slightly rounded, not a full pill */
 	padding: 0.8rem 0.9rem;
 	background: linear-gradient(140deg, rgb(80 59 49 / 0.42), rgb(112 93 86 / 0.34));
 	font-size: 0.94rem;
+	transition: border-color 500ms ease, box-shadow 500ms ease, transform 500ms ease;
+}
+
+.chip::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: linear-gradient(
+		90deg,
+		#ff6b6b,
+		#ffb86b,
+		#ffe66b,
+		#6bffb8,
+		#6bd4ff,
+		#a26bff,
+		#ff6bd4,
+		#ff6b6b
+	);
+	background-size: 260% 100%;
+	background-position: 130% 0;
+	opacity: 0;
+	mix-blend-mode: soft-light;
+	pointer-events: none;
+	transition: opacity 280ms ease;
+}
+
+.chip:hover {
+	border-color: rgb(167 187 236 / 0.45);
+	box-shadow: 0 10px 26px rgb(2 2 2 / 0.35);
+	transform: translateY(-1px);
+}
+
+.chip:hover::before {
+	opacity: 0.50;
+	animation: chip-rainbow-wave 7s linear infinite;
 }
 
 /* ============================================================
@@ -753,40 +846,112 @@ body {
 
 /* ============================================================
    14. TIMELINE — EXPERIENCE SECTION
-   Each job entry has a vertical left-side bar (the "line") with
-   content indented to the right of it.
-   ============================================================ */
-/* ============================================================
-   14. TIMELINE — EXPERIENCE SECTION
-   Each job entry has a vertical left-side bar (the "line") with
-   content indented to the right of it.
+   Each role is a clickable card. The role/period sit inside a
+   <button> (.timeline-toggle) so it's obviously interactive —
+   hovering or clicking expands the details list beneath it.
    ============================================================ */
 .timeline-item {
-	/* border-left creates the vertical "timeline track" line */
-	border-left: 2px solid rgb(167 187 236 / 0.32);
-	/* padding-left pushes the text away from the line */
-	padding: 0.2rem 0 0.2rem 1rem;
+	position: relative;
+	overflow: hidden;
+	border: 1px solid rgb(167 187 236 / 0.16);
+	border-left: 3px solid rgb(167 187 236 / 0.4);
+	border-radius: 0.9rem;
+	background: linear-gradient(150deg, rgb(80 59 49 / 0.32), rgb(2 2 2 / 0.55));
+	box-shadow: 0 6px 18px rgb(2 2 2 / 0.25);
+	transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+.timeline-item:hover,
+.timeline-item.is-open {
+	border-left-color: rgb(167 187 236 / 0.8);
+	border-color: rgb(167 187 236 / 0.3);
+	box-shadow: 0 14px 34px rgb(2 2 2 / 0.45);
+	transform: translateY(-1px);
+}
+
+/* The clickable header — reset native button chrome, then style
+   it to read as an obvious, tappable control (cursor + hover). */
+.timeline-toggle {
+	all: unset;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	width: 100%;
+	padding: 1rem 1.2rem;
+	cursor: pointer;
+}
+
+.timeline-toggle:focus-visible {
+	outline: 2px solid rgb(167 187 236 / 0.65);
+	outline-offset: -3px;
+	border-radius: 0.6rem;
 }
 
 /* Date range label (e.g. "2024 - Present").
    Monospace font + lighter color makes it feel date-stamp-like. */
-.timeline-item p:first-child {
+.timeline-period {
+	display: block;
 	font-family: var(--font-mono);
-	font-size: 0.82rem;
+	font-size: 0.8rem;
+	letter-spacing: 0.03em;
 	color: #cad6f5;
 }
 
 /* Job title / role name */
-.timeline-item h3 {
+.timeline-role {
 	margin-top: 0.3rem;
 	font-size: 1.08rem;
 	font-weight: 600;
 }
 
-/* Job description paragraph — slightly muted */
-.timeline-item p:last-child {
-	margin-top: 0.35rem;
-	color: rgb(167 187 236 / 0.76);
+/* Chevron flips 180° and brightens on hover/open — the clearest
+   visual cue that the role header is expandable. */
+.timeline-chevron {
+	flex-shrink: 0;
+	width: 20px;
+	height: 20px;
+	color: rgb(167 187 236 / 0.55);
+	transition: transform 280ms ease, color 220ms ease;
+}
+
+.timeline-item:hover .timeline-chevron,
+.timeline-item.is-open .timeline-chevron {
+	color: var(--color-sky);
+	transform: rotate(180deg);
+}
+
+/* Details collapse to 0 height via the grid-template-rows trick,
+   which animates smoothly to full content height without a
+   hardcoded max-height (works for both short and very long lists). */
+.timeline-details {
+	display: grid;
+	grid-template-rows: 0fr;
+	transition: grid-template-rows 420ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.timeline-item:hover .timeline-details,
+.timeline-item.is-open .timeline-details {
+	grid-template-rows: 1fr;
+}
+
+.timeline-details-inner {
+	overflow: hidden;
+	min-height: 0;
+}
+
+.timeline-details ul {
+	/* Extra left padding clears the rounded card corner and gives
+	   the bullet markers room instead of hugging the edge. */
+	padding: 0.15rem 1.3rem 1.15rem 2.15rem;
+	opacity: 0;
+	transition: opacity 240ms ease 40ms;
+}
+
+.timeline-item:hover .timeline-details ul,
+.timeline-item.is-open .timeline-details ul {
+	opacity: 1;
 }
 
 /* ============================================================
@@ -796,6 +961,7 @@ body {
    display: grid;
    gap: 0.95rem;
    max-width: 760px;
+   margin-inline: auto;
 }
 
 .contact-grid {
@@ -1090,6 +1256,16 @@ footer {
 	}
 }
 
+/* Sweeps the rainbow gradient across a hovered skill chip, left to right. */
+@keyframes chip-rainbow-wave {
+	0% {
+		background-position: 130% 0;
+	}
+	100% {
+		background-position: -130% 0;
+	}
+}
+
 /* RGB cycling glow used on the "Hire Me" nav button */
 @keyframes rgb-glow {
 	0%   { box-shadow: 0 0 12px 3px rgba(255, 0, 0, 0.6),   0 0 32px 6px rgba(255, 0, 0, 0.25); }
@@ -1102,11 +1278,38 @@ footer {
 }
 
 .btn-rgb-glow {
-	animation: rgb-glow 4s linear infinite;
+	transform-origin: 50% 0%;
+	animation: rgb-glow 4s linear infinite, hire-me-ring 15s ease-in-out infinite;
 }
 
 .btn-rgb-glow:hover {
-	animation-duration: 2s;
+	animation-duration: 2s, 15s;
+}
+
+/* Bell-style shake: the wiggle only plays in the first ~0.6s of
+   each 15s cycle, then the button holds still until the next ring. */
+@keyframes hire-me-ring {
+	0%, 4%, 100% {
+		transform: rotate(0deg);
+	}
+	0.7% {
+		transform: rotate(-14deg);
+	}
+	1.4% {
+		transform: rotate(12deg);
+	}
+	2.1% {
+		transform: rotate(-9deg);
+	}
+	2.8% {
+		transform: rotate(7deg);
+	}
+	3.3% {
+		transform: rotate(-4deg);
+	}
+	3.7% {
+		transform: rotate(2deg);
+	}
 }
 
 /* RGB glow for non-Hire-Me buttons on hover — same cycle, slightly softer */
@@ -1247,6 +1450,31 @@ footer {
 	/* Disable fluid background animations */
 	.fluid-blob {
 		animation: none;
+	}
+
+	/* Keep the rainbow visible on hover but skip the moving sweep */
+	.chip:hover::before {
+		animation: none;
+		background-position: 0 0;
+	}
+
+	/* Snap the timeline details open/closed instead of animating */
+	.timeline-item,
+	.timeline-details,
+	.timeline-chevron,
+	.timeline-details ul {
+		transition: none;
+	}
+
+	/* Snap the metric arrow/text swap instead of cross-fading */
+	.metric-arrow,
+	.metric-text {
+		transition: none;
+	}
+
+	/* Disable the periodic "Hire Me" bell-ring shake */
+	.btn-rgb-glow {
+		animation-name: rgb-glow;
 	}
 
 	/* Make all scroll-reveal elements immediately fully visible
