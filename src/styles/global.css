@@ -823,11 +823,34 @@ body {
 	color: var(--color-sky);
 }
 
+.project-card .project-links a {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 9.5rem;
+	padding: 0.72rem 1rem;
+	border-radius: 9999px;
+	font-size: 0.76rem;
+	letter-spacing: 0.08em;
+	line-height: 1;
+}
+
+.project-card .project-links a.btn-primary {
+	color: rgb(18 22 32 / 0.88);
+	box-shadow: 0 14px 28px rgb(167 187 236 / 0.22);
+}
+
+/*.project-card .project-links a.btn-ghost {
+	background-color: rgb(167 187 236 / 0.08);
+}*/
+
 /* Row that holds the Live Preview and Source links side by side */
 .project-links {
 	display: flex;
-	gap: 1rem;
+	flex-wrap: wrap;
+	gap: 0.85rem;
 	align-items: center;
+	margin-top: auto;
 }
 
 /* Project screenshot thumbnail.
